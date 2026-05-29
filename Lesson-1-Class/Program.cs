@@ -1,5 +1,5 @@
 ﻿
-namespace MyFirstApp
+namespace Classes
 {
     class Program
     {

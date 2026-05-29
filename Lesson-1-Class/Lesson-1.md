@@ -5,7 +5,8 @@ A namespace is like a wrapper that group related types together and prevents nam
 class - is a reference type that defines a blueprint for an object.
 
 example. 
-``` class Program {
+```csharp
+ class Program {
         
     static void Main(string[] args)
         {
