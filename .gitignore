@@ -1,0 +1,7 @@
+Lesson-1/bin/
+Lesson-1/obj/
+.vs/
+*.user
+*.suo
+.DS_Store
+Lesson-1/.DS_Store
