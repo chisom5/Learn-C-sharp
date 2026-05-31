@@ -1,0 +1,20 @@
+@TodoApi_HostAddress = http://localhost:5261
+
+get all todos
+GET {{TodoApi_HostAddress}}/todos
+Accept: application/json
+
+GET {{TodoApi_HostAddress}}/todos/{id}
+Accept: application/json
+
+PUT {{TodoApi_HostAddress}}/todo/{id}
+payload: id, updatedTodo
+Accept: application/json
+
+Send Request
+POST {{TodoApi_HostAddress}}/todo
+payload: updatedTodo
+Accept: application/json
+
+DELETE {{TodoApi_HostAddress}}/todo/{id}
+Accept: application/json
