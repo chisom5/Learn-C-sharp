@@ -1,13 +1,20 @@
-Lesson-1-Class/bin/
-Lesson-1-Class/obj/
-Lesson-2-Getters & Setter/bin/
-Lesson-2-Getters & Setter/obj/
-Lesson-3-Interface & Abstract class/bin/
-Lesson-3-Interface & Abstract class/obj/
-Lesson-4-Nullable types/bin/
-Lesson-4-Nullable types/obj/
+# .NET build output
+bin/
+obj/
+.idea/
+
+# Visual Studio
 .vs/
 *.user
 *.suo
-*.DS_Store
-Lesson-1-Class/*.DS_Store
+
+# macOS
+.DS_Store
+
+# Rider HTTP Client
+httpRequests/
+
+# Rider Queries
+queries/
+
+
