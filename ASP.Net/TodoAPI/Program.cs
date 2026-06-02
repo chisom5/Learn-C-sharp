@@ -37,6 +37,28 @@ app.MapPost("/todo", (TodoItem todoItem) =>
 
     return TypedResults.Created($"todo/{todoItem.Id}", todoItem);
 
+}).AddEndpointFilter(async (context, next) =>
+{
+    var taskArgument = context.GetArgument<TodoItem>(0);
+    var errors = new Dictionary<string, string[]>();
+    if (taskArgument.DueDate < DateTime.UtcNow)
+    {
+        errors.Add(nameof(taskArgument.DueDate), ["Due date cannot be in the past."]);
+    }
+    if (taskArgument.IsCompleted && taskArgument.DueDate > DateTime.UtcNow)
+    {
+        errors.Add(nameof(taskArgument.DueDate), ["Cannot mark a task as completed if its due date is in the future."]);
+    }
+    if (taskArgument.IsCompleted)
+    {
+        errors.Add(nameof(taskArgument.IsCompleted), ["Cannot mark a task as completed."]);
+    }
+
+    if (errors.Count > 0)
+    {
+        return TypedResults.ValidationProblem(errors);
+    }
+    return await next(context);
 });
 
 app.MapPut("/todo/{id}", (int id, TodoItem updatedTodo) =>
