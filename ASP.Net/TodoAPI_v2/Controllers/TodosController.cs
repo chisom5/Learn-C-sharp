@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Mvc;
+using TodoAPI.Models;
 
-namespace TodoAPI_v2.Controllers;
+namespace TodoAPI.Controllers;
 
 [ApiController]
 [Route("api/todos")]
