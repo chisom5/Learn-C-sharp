@@ -1,11 +1,11 @@
 namespace TodoAPI.Models;
 
-public record Todos
+public class Todos
 {
     
-    public int Id { get; init; }
-    public string Name { get; init; } = string.Empty;
-    public bool IsCompleted { get; init; }
-    public DateTime DueDate { get; init; }
+    public int Id { get; set; }
+    public string Name { get; set; } = string.Empty;
+    public bool IsCompleted { get; set; }
+    public DateTime DueDate { get; set; }
     
 }
