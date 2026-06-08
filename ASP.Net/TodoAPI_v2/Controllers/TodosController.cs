@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using TodoAPI.Models;
 using TodoAPI.Data;
+using TodoAPI.Filters;
 
 namespace TodoAPI.Controllers;
 
@@ -34,6 +35,7 @@ public class TodosController : ControllerBase
         return Ok(todoItem);
     }
 
+    [ServiceFilter(typeof(ValidateTodoPayloadFilter))]
     [HttpPost]
     public async Task<ActionResult> Todos([FromBody] Todos todo)
     {
@@ -42,6 +44,7 @@ public class TodosController : ControllerBase
         return CreatedAtAction(nameof(TodosById), new { id = todo.Id }, todo);
     }
 
+    [ServiceFilter(typeof(ValidateTodoPayloadFilter))]
     [HttpPatch("{id}")]
     public async Task<ActionResult> Todos(int id, [FromBody] Todos todo)
     {
