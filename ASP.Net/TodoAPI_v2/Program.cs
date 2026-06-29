@@ -9,22 +9,6 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddControllers((options) =>
 {
     options.Filters.Add<GlobalExceptionFilter>();
-}).ConfigureApiBehaviorOptions(options =>
-{
-    options.InvalidModelStateResponseFactory = context =>
-    {
-        var errorMessages = context.ModelState
-            .Where(e => e.Value?.Errors.Count > 0)
-            .ToDictionary(
-                kvp => kvp.Key,
-                kvp => kvp.Value?.Errors.Select(e => e.ErrorMessage).ToList() ?? new List<string>()
-            );
-
-        return new BadRequestObjectResult(new { Errors = errorMessages });
-    };
-}).AddJsonOptions(options =>
-{
-    options.JsonSerializerOptions.PropertyNamingPolicy = null;
 });
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();

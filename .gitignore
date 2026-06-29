@@ -11,10 +11,6 @@ obj/
 # macOS
 .DS_Store
 
-# Rider HTTP Client
-httpRequests/
 
-# Rider Queries
-queries/
 
 
