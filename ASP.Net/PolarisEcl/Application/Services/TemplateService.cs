@@ -38,8 +38,10 @@ public class TemplateService : ITemplateService
             }
         }
 
+        string folderName = request.ComputationId == null ? "Templates" : "Uploads";
+
         using var stream = request.File.OpenReadStream();
-        string relativeStoragePath = await _storageService.SaveFileAsync(stream, request.File.FileName, "Templates");
+        string relativeStoragePath = await _storageService.SaveFileAsync(stream, request.File.FileName, folderName);
 
 
         var computationFile = new ComputationFile

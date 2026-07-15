@@ -32,4 +32,6 @@ public static class DbInitializer
             await context.SaveChangesAsync();
         }
     }
+
+    // seed templates files for the two file type.
 }

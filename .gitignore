@@ -11,6 +11,15 @@ obj/
 # macOS
 .DS_Store
 
+# Ignore all user calculation uploads
+**/FileStorage/Uploads/*
+!**/FileStorage/Uploads/.gitkeep
 
+# Ignore any new dynamic templates uploaded in the future
+**/FileStorage/Templates/*
 
+# Prevent Git from ignoring your two baseline templates
+!**/FileStorage/Templates/.gitkeep
+!**/ASP.Net/PolarisEcl/API/FileStorage/Templates/PD_Data_Pool_Excel_Input.xlsx
+!**/ASP.Net/PolarisEcl/API/FileStorage/Templates/Macro_Model_Historical_Forecasted_Data.xlsx
 
