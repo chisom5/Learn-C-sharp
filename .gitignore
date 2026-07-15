@@ -15,11 +15,10 @@ obj/
 **/FileStorage/Uploads/*
 !**/FileStorage/Uploads/.gitkeep
 
-# Ignore any new dynamic templates uploaded in the future
+# Ignore everything in Templates (including admin-uploaded dynamic templates)
 **/FileStorage/Templates/*
 
-# Prevent Git from ignoring your two baseline templates
+# Keep ONLY the baseline clean templates and the .gitkeep placeholder
 !**/FileStorage/Templates/.gitkeep
 !**/ASP.Net/PolarisEcl/API/FileStorage/Templates/PD_Data_Pool_Excel_Input.xlsx
 !**/ASP.Net/PolarisEcl/API/FileStorage/Templates/Macro_Model_Historical_Forecasted_Data.xlsx
-
