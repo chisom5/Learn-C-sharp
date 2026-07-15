@@ -9,6 +9,8 @@ public class PDResultConfiguration : IEntityTypeConfiguration<PDResult>
 {
     public void Configure(EntityTypeBuilder<PDResult> builder)
     {
+        builder.ToTable("PDResults");
+
         builder.HasKey(l => l.Id);
 
         builder.Property(l => l.SectorName)
@@ -39,6 +41,7 @@ public class PDResultConfiguration : IEntityTypeConfiguration<PDResult>
         .HasPrecision(18, 2);
         builder.Property(l => l.Month12Value)
                 .HasPrecision(18, 2);
+                
         // --- RELATIONSHIPS ---
         builder.HasOne(l => l.ECLComputation)
         .WithMany()

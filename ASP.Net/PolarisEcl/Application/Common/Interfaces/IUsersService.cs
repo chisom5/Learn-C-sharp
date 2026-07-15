@@ -1,4 +1,5 @@
 using PolarisEcl.Application.Common.Dtos;
+using PolarisEcl.Application.Common.Wrappers;
 
 namespace PolarisEcl.Application.Common.Interfaces;
 

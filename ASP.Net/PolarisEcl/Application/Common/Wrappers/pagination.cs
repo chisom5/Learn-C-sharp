@@ -1,11 +1,11 @@
-namespace PolarisEcl.Application.Common.Dtos;
+namespace PolarisEcl.Application.Common.Wrappers;
 
 public class PageQuery
 {
     public int PageNum {get; set;} = 1;
     public int PageSize {get; set;} = 2;
-    public string? Search {get; set;}
-    public string? SortBy {get; set;}
+    // public string? Search {get; set;}
+    // public string? SortBy {get; set;}
 }
 
 public class PageResponse<T>

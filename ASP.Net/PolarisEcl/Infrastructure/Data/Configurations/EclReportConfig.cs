@@ -8,6 +8,8 @@ public class ECLReportConfiguration : IEntityTypeConfiguration<ECLReport>
 {
     public void Configure(EntityTypeBuilder<ECLReport> builder)
     {
+        builder.ToTable("ECLReports");
+        
         builder.HasKey(r => r.Id);
 
         builder.Property(r => r.ReportStatus)
@@ -21,8 +23,13 @@ public class ECLReportConfiguration : IEntityTypeConfiguration<ECLReport>
             .HasPrecision(18, 2);
 
         builder.Property(r => r.TotalCoverageRatio)
-            .HasPrecision(18, 6); 
+            .HasPrecision(18, 6);
 
-         builder.HasIndex(x => x.ComputationId).IsUnique();
+        builder.HasMany(x => x.Rows)
+        .WithOne(x => x.ECLReport)
+        .HasForeignKey(x => x.ReportId)
+        .OnDelete(DeleteBehavior.Cascade);
+
+        builder.HasIndex(x => x.ComputationId).IsUnique();
     }
 }

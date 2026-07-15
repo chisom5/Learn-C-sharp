@@ -27,9 +27,9 @@ public static class DbInitializer
                 UpdatedAt = DateTime.UtcNow
             };
 
-            context.Users.Add(defaultAdmin);
+            await context.Users.AddAsync(defaultAdmin);
             
-            await context.SaveChangesAsync(CancellationToken.None);
+            await context.SaveChangesAsync();
         }
     }
 }

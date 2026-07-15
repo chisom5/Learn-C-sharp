@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Authorization;
 using PolarisEcl.Domain.Exceptions;
 using PolarisEcl.Filters;
 using FluentValidation;
+using PolarisEcl.Application.Common.Wrappers;
 
 namespace PolarisEcl.Controllers;
 

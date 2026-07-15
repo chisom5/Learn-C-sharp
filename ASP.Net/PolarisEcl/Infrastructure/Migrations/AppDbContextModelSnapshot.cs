@@ -28,7 +28,7 @@ namespace PolarisEcl.Infrastructure.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uuid");
 
-                    b.Property<Guid>("ComputationId")
+                    b.Property<Guid?>("ComputationId")
                         .HasColumnType("uuid");
 
                     b.Property<string>("File")
@@ -47,7 +47,9 @@ namespace PolarisEcl.Infrastructure.Migrations
                         .HasColumnType("character varying(500)");
 
                     b.Property<DateTime>("UploadedAt")
-                        .HasColumnType("timestamp with time zone");
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("timestamp with time zone")
+                        .HasDefaultValueSql("CURRENT_TIMESTAMP");
 
                     b.Property<Guid>("UploadedById")
                         .HasColumnType("uuid");
@@ -58,7 +60,7 @@ namespace PolarisEcl.Infrastructure.Migrations
 
                     b.HasIndex("UploadedById");
 
-                    b.ToTable("ComputationFile");
+                    b.ToTable("ComputationFiles", (string)null);
                 });
 
             modelBuilder.Entity("PolarisEcl.Domain.Models.EADResult", b =>
@@ -85,7 +87,9 @@ namespace PolarisEcl.Infrastructure.Migrations
                         .HasColumnType("character varying(250)");
 
                     b.Property<int>("Dpd")
-                        .HasColumnType("integer");
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer")
+                        .HasDefaultValue(0);
 
                     b.Property<decimal>("EIROrCommercialRate")
                         .HasPrecision(18, 6)
@@ -161,9 +165,9 @@ namespace PolarisEcl.Infrastructure.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("ComputationId");
+                    b.HasIndex("ComputationId", "AccountNo");
 
-                    b.ToTable("EADResults");
+                    b.ToTable("EADResults", (string)null);
                 });
 
             modelBuilder.Entity("PolarisEcl.Domain.Models.ECLComputation", b =>
@@ -178,11 +182,18 @@ namespace PolarisEcl.Infrastructure.Migrations
                     b.Property<Guid?>("AuthorizeById")
                         .HasColumnType("uuid");
 
+                    b.Property<string>("ComputationName")
+                        .IsRequired()
+                        .HasMaxLength(250)
+                        .HasColumnType("character varying(250)");
+
                     b.Property<Guid>("ComputedById")
                         .HasColumnType("uuid");
 
                     b.Property<DateTime>("CreatedAt")
-                        .HasColumnType("timestamp with time zone");
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("timestamp with time zone")
+                        .HasDefaultValueSql("CURRENT_TIMESTAMP");
 
                     b.Property<string>("HistoricalMargin")
                         .IsRequired()
@@ -194,24 +205,27 @@ namespace PolarisEcl.Infrastructure.Migrations
                         .HasMaxLength(50)
                         .HasColumnType("character varying(50)");
 
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasColumnType("text");
-
                     b.Property<int>("PdWeightBaseline")
-                        .HasColumnType("integer");
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer")
+                        .HasDefaultValue(0);
 
                     b.Property<int>("PdWeightBestcase")
-                        .HasColumnType("integer");
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer")
+                        .HasDefaultValue(0);
 
                     b.Property<int>("PdWeightWorstcase")
-                        .HasColumnType("integer");
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer")
+                        .HasDefaultValue(0);
 
                     b.Property<DateTime>("ReportingPeriod")
                         .HasColumnType("timestamp with time zone");
 
                     b.Property<string>("ReviewComment")
-                        .HasColumnType("text");
+                        .HasMaxLength(1000)
+                        .HasColumnType("character varying(1000)");
 
                     b.Property<DateTime?>("ReviewedAt")
                         .HasColumnType("timestamp with time zone");
@@ -227,7 +241,11 @@ namespace PolarisEcl.Infrastructure.Migrations
 
                     b.HasIndex("ComputedById");
 
-                    b.ToTable("ECLComputations");
+                    b.HasIndex("ReportingPeriod");
+
+                    b.HasIndex("Status");
+
+                    b.ToTable("ECLComputations", (string)null);
                 });
 
             modelBuilder.Entity("PolarisEcl.Domain.Models.ECLReport", b =>
@@ -261,60 +279,7 @@ namespace PolarisEcl.Infrastructure.Migrations
                     b.HasIndex("ComputationId")
                         .IsUnique();
 
-                    b.ToTable("ECLReport");
-                });
-
-            modelBuilder.Entity("PolarisEcl.Domain.Models.EclDataSnapshot", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uuid");
-
-                    b.Property<string>("AccountNumber")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.Property<DateTime>("CreatedAt")
-                        .HasColumnType("timestamp with time zone");
-
-                    b.Property<string>("CustomerName")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.Property<decimal>("EAD")
-                        .HasColumnType("numeric");
-
-                    b.Property<decimal>("ECL")
-                        .HasColumnType("numeric");
-
-                    b.Property<decimal>("LGD")
-                        .HasColumnType("numeric");
-
-                    b.Property<int>("Month")
-                        .HasColumnType("integer");
-
-                    b.Property<decimal>("OutstandingBalance")
-                        .HasColumnType("numeric");
-
-                    b.Property<decimal>("PD")
-                        .HasColumnType("numeric");
-
-                    b.Property<int>("ProductType")
-                        .HasColumnType("integer");
-
-                    b.Property<string>("SnapshotDate")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.Property<int>("Stage")
-                        .HasColumnType("integer");
-
-                    b.Property<int>("Year")
-                        .HasColumnType("integer");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("EclDataSnapshot");
+                    b.ToTable("ECLReports", (string)null);
                 });
 
             modelBuilder.Entity("PolarisEcl.Domain.Models.EclReportRow", b =>
@@ -333,10 +298,14 @@ namespace PolarisEcl.Infrastructure.Migrations
                         .HasColumnType("character varying(50)");
 
                     b.Property<long>("EAD")
-                        .HasColumnType("bigint");
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bigint")
+                        .HasDefaultValue(0L);
 
                     b.Property<long>("ECL")
-                        .HasColumnType("bigint");
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bigint")
+                        .HasDefaultValue(0L);
 
                     b.Property<string>("ProductLabel")
                         .IsRequired()
@@ -350,7 +319,7 @@ namespace PolarisEcl.Infrastructure.Migrations
 
                     b.HasIndex("ReportId");
 
-                    b.ToTable("EclReportRow");
+                    b.ToTable("EclReportRows", (string)null);
                 });
 
             modelBuilder.Entity("PolarisEcl.Domain.Models.LGDResult", b =>
@@ -375,7 +344,69 @@ namespace PolarisEcl.Infrastructure.Migrations
 
                     b.HasIndex("ComputationId");
 
-                    b.ToTable("LGDResult");
+                    b.ToTable("LGDResults", (string)null);
+                });
+
+            modelBuilder.Entity("PolarisEcl.Domain.Models.Loan", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
+
+                    b.Property<string>("AccountNumber")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("character varying(50)");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("timestamp with time zone")
+                        .HasDefaultValueSql("CURRENT_TIMESTAMP");
+
+                    b.Property<string>("CustomerName")
+                        .IsRequired()
+                        .HasMaxLength(250)
+                        .HasColumnType("character varying(250)");
+
+                    b.Property<decimal>("EAD")
+                        .HasPrecision(18, 2)
+                        .HasColumnType("numeric(18,2)");
+
+                    b.Property<decimal>("ECL")
+                        .HasPrecision(18, 2)
+                        .HasColumnType("numeric(18,2)");
+
+                    b.Property<decimal>("LGD")
+                        .HasPrecision(18, 6)
+                        .HasColumnType("numeric(18,6)");
+
+                    b.Property<int>("Month")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer")
+                        .HasDefaultValue(0);
+
+                    b.Property<decimal>("OutstandingBalance")
+                        .HasColumnType("numeric");
+
+                    b.Property<decimal>("PD")
+                        .HasPrecision(18, 6)
+                        .HasColumnType("numeric(18,6)");
+
+                    b.Property<string>("ProductType")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<int>("Stage")
+                        .HasColumnType("integer");
+
+                    b.Property<int>("Year")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer")
+                        .HasDefaultValue(0);
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Loans", (string)null);
                 });
 
             modelBuilder.Entity("PolarisEcl.Domain.Models.PDResult", b =>
@@ -444,7 +475,7 @@ namespace PolarisEcl.Infrastructure.Migrations
 
                     b.HasIndex("ComputationId");
 
-                    b.ToTable("PDResults");
+                    b.ToTable("PDResults", (string)null);
                 });
 
             modelBuilder.Entity("PolarisEcl.Domain.Models.RefreshToken", b =>
@@ -454,7 +485,9 @@ namespace PolarisEcl.Infrastructure.Migrations
                         .HasColumnType("uuid");
 
                     b.Property<DateTime>("CreatedAt")
-                        .HasColumnType("timestamp with time zone");
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("timestamp with time zone")
+                        .HasDefaultValueSql("CURRENT_TIMESTAMP");
 
                     b.Property<DateTime>("Expires")
                         .HasColumnType("timestamp with time zone");
@@ -479,7 +512,48 @@ namespace PolarisEcl.Infrastructure.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("RefreshToken");
+                    b.ToTable("RefreshTokens", (string)null);
+                });
+
+            modelBuilder.Entity("PolarisEcl.Domain.Models.StageOverride", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
+
+                    b.Property<Guid>("ComputationId")
+                        .HasColumnType("uuid");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("timestamp with time zone")
+                        .HasDefaultValueSql("CURRENT_TIMESTAMP");
+
+                    b.Property<Guid>("CreatedById")
+                        .HasColumnType("uuid");
+
+                    b.Property<Guid>("LoanId")
+                        .HasColumnType("uuid");
+
+                    b.Property<int>("NewStage")
+                        .HasColumnType("integer");
+
+                    b.Property<int>("PreviousStage")
+                        .HasColumnType("integer");
+
+                    b.Property<string>("Reason")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ComputationId");
+
+                    b.HasIndex("CreatedById");
+
+                    b.HasIndex("LoanId");
+
+                    b.ToTable("StageOverrides", (string)null);
                 });
 
             modelBuilder.Entity("PolarisEcl.Domain.Models.User", b =>
@@ -537,8 +611,7 @@ namespace PolarisEcl.Infrastructure.Migrations
                     b.HasOne("PolarisEcl.Domain.Models.ECLComputation", "ECLComputation")
                         .WithMany("Files")
                         .HasForeignKey("ComputationId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .OnDelete(DeleteBehavior.Cascade);
 
                     b.HasOne("PolarisEcl.Domain.Models.User", "UploadedBy")
                         .WithMany()
@@ -635,16 +708,50 @@ namespace PolarisEcl.Infrastructure.Migrations
                     b.Navigation("User");
                 });
 
+            modelBuilder.Entity("PolarisEcl.Domain.Models.StageOverride", b =>
+                {
+                    b.HasOne("PolarisEcl.Domain.Models.ECLComputation", "ECLComputation")
+                        .WithMany("StageOverrides")
+                        .HasForeignKey("ComputationId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("PolarisEcl.Domain.Models.User", "CreatedBy")
+                        .WithMany()
+                        .HasForeignKey("CreatedById")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.HasOne("PolarisEcl.Domain.Models.Loan", "Loan")
+                        .WithMany("StageOverrides")
+                        .HasForeignKey("LoanId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("CreatedBy");
+
+                    b.Navigation("ECLComputation");
+
+                    b.Navigation("Loan");
+                });
+
             modelBuilder.Entity("PolarisEcl.Domain.Models.ECLComputation", b =>
                 {
                     b.Navigation("ECLReport");
 
                     b.Navigation("Files");
+
+                    b.Navigation("StageOverrides");
                 });
 
             modelBuilder.Entity("PolarisEcl.Domain.Models.ECLReport", b =>
                 {
                     b.Navigation("Rows");
+                });
+
+            modelBuilder.Entity("PolarisEcl.Domain.Models.Loan", b =>
+                {
+                    b.Navigation("StageOverrides");
                 });
 
             modelBuilder.Entity("PolarisEcl.Domain.Models.User", b =>

@@ -8,7 +8,8 @@ public class EADResultConfiguration : IEntityTypeConfiguration<EADResult>
 {
     public void Configure(EntityTypeBuilder<EADResult> builder)
     {
-        // 1. Table & Primary Key Name Configuration
+        builder.ToTable("EADResults");
+
         builder.HasKey(e => e.Id);
 
         builder.Property(e => e.AccountNo)
@@ -20,18 +21,33 @@ public class EADResultConfiguration : IEntityTypeConfiguration<EADResult>
             .HasMaxLength(250);
 
         builder.Property(e => e.Products)
+        .IsRequired()
             .HasMaxLength(100);
 
         builder.Property(e => e.LoanType)
+        .IsRequired()
             .HasMaxLength(50);
 
         builder.Property(e => e.AmortizedCost)
+        .IsRequired()
             .HasPrecision(18, 4);
 
+        builder.Property(e => e.Dpd)
+                    .IsRequired()
+                    .HasDefaultValue(0);
+
+        builder.Property(e => e.StartDate)
+        .IsRequired();
+
+        builder.Property(e => e.MaturityDate)
+            .IsRequired();
+
         builder.Property(e => e.EIROrCommercialRate)
-            .HasPrecision(18, 6); 
+            .IsRequired()
+            .HasPrecision(18, 6);
 
         builder.Property(e => e.SavingsCollateral)
+            .IsRequired()
             .HasPrecision(18, 4);
 
         // 4. Time-Series Columns (Month 1 to Month 12)
@@ -53,8 +69,8 @@ public class EADResultConfiguration : IEntityTypeConfiguration<EADResult>
         builder.HasOne(e => e.ECLComputation)
             .WithMany() // Assuming ECLComputation has an ICollection<EADResult> or you can use .WithMany(c => c.EadResults) if you added the collection property
             .HasForeignKey(e => e.ComputationId)
-            .OnDelete(DeleteBehavior.Cascade); 
+            .OnDelete(DeleteBehavior.Cascade);
 
-        builder.HasIndex(e => e.ComputationId);
+        builder.HasIndex(e => new { e.ComputationId, e.AccountNo });
     }
 }

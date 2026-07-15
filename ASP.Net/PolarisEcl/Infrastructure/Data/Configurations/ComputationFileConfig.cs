@@ -8,6 +8,8 @@ public class ComputationFileConfiguration : IEntityTypeConfiguration<Computation
 {
     public void Configure(EntityTypeBuilder<ComputationFile> builder)
     {
+        builder.ToTable("ComputationFiles");
+
         builder.HasKey(f => f.Id);
 
         builder.Property(f => f.FileName)
@@ -19,14 +21,25 @@ public class ComputationFileConfiguration : IEntityTypeConfiguration<Computation
             .HasMaxLength(500);
 
         builder.Property(f => f.File)
+        .IsRequired()
             .HasConversion<string>()
             .HasMaxLength(30);
+
+        builder.Property(f => f.UploadedAt)
+        .IsRequired()
+        .HasDefaultValueSql("CURRENT_TIMESTAMP"); 
+
+        builder.Property(f => f.UploadedById)
+            .IsRequired();
+
+        builder.Property(f => f.ComputationId)
+            .IsRequired(false);
 
         // --- RELATIONSHIPS ---
 
         // 1. One-to-Many: ECLComputation -> ComputationFiles
         builder.HasOne(f => f.ECLComputation)
-            .WithMany(c => c.Files) 
+            .WithMany(c => c.Files)
             .HasForeignKey(f => f.ComputationId)
             .OnDelete(DeleteBehavior.Cascade); // If computation is deleted, delete its file references
 

@@ -12,8 +12,9 @@ public class DashboardRequestDtoValidator : AbstractValidator<DashboardRequestDt
         .WithMessage("Month must be between 1 (January) and 12 (December).");
 
         RuleFor(x => x.Year)
+        .Cascade(CascadeMode.Stop)
         .NotEmpty()
         .ValidFinancialYear(10)
         .WithMessage("Year is required to load dashboard analytics.");
     }
-}
+} 

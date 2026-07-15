@@ -1,8 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
-using PolarisEcl.Domain.Enums;
 using PolarisEcl.Domain.Models;
-using PolarisEcl.Infrastructure.Security;
 
 namespace PolarisEcl.Infrastructure.Data.Configurations;
 

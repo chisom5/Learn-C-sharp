@@ -1,11 +1,8 @@
-using System.Security.Claims;
 using Microsoft.AspNetCore.Mvc;
 using PolarisEcl.Application.Common.Interfaces;
 using PolarisEcl.Application.Common.Dtos;
-using Microsoft.AspNetCore.Authorization;
 using PolarisEcl.Domain.Exceptions;
 using FluentValidation;
-using System.Security.AccessControl;
 
 namespace PolarisEcl.Controllers;
 

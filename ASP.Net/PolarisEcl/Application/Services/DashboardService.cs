@@ -18,7 +18,7 @@ public class DashboardService : IDashboardSerivce
     public async Task<DashboardResponseDto> GetDashboardDataAsync(DashboardRequestDto request)
     {
 
-        var baseQuery = _context.EclDataSnapshot.AsNoTracking().Where(d => d.Year == request.Year);
+        var baseQuery = _context.Loans.AsNoTracking().Where(d => d.Year == request.Year);
 
         if (request.Month.HasValue)
         {
@@ -27,7 +27,6 @@ public class DashboardService : IDashboardSerivce
 
         var dataSnapshots = await baseQuery.ToListAsync();
 
-        // handle empty database result.
         if (dataSnapshots.Count == 0)
         {
             throw new NotFoundException($"No financial data records found for Year {request.Year}{(request.Month.HasValue ? $", Month {request.Month}" : "")}.");
@@ -66,7 +65,7 @@ public class DashboardService : IDashboardSerivce
         // }).ToListAsync();
 
         var yearlyDataSnapshots = request.Month.HasValue
-                    ? await _context.EclDataSnapshot.AsNoTracking().Where(d => d.Year == request.Year).ToListAsync()
+                    ? await _context.Loans.AsNoTracking().Where(d => d.Year == request.Year).ToListAsync()
                     : dataSnapshots;
 
         var chart3Data = yearlyDataSnapshots
@@ -101,7 +100,7 @@ public class DashboardService : IDashboardSerivce
 
     public async Task<IEnumerable<SegmentDistributionDto>> GetSegmentDistributionAsync(DashboardRequestDto request)
     {
-        var dataSnapshots = _context.EclDataSnapshot.AsNoTracking();
+        var dataSnapshots = _context.Loans.AsNoTracking();
 
         dataSnapshots = dataSnapshots.Where(d => d.Year == request.Year);
         if (request.Month.HasValue)
@@ -123,7 +122,7 @@ public class DashboardService : IDashboardSerivce
 
     public async Task<IEnumerable<StageDistributionDto>> GetStageDistributionAsync(DashboardRequestDto request)
     {
-        var dataSnapshots = _context.EclDataSnapshot.AsNoTracking();
+        var dataSnapshots = _context.Loans.AsNoTracking();
 
         dataSnapshots = dataSnapshots.Where(d => d.Year == request.Year);
         if (request.Month.HasValue)
@@ -145,7 +144,7 @@ public class DashboardService : IDashboardSerivce
 
     public async Task<IEnumerable<EadByStageDto>> GetEadBySegmentAndStageAsync(DashboardRequestDto request)
     {
-        var dataSnapshots = _context.EclDataSnapshot.AsNoTracking();
+        var dataSnapshots = _context.Loans.AsNoTracking();
 
         dataSnapshots = dataSnapshots.Where(d => d.Year == request.Year);
         if (request.Month.HasValue)
@@ -168,7 +167,7 @@ public class DashboardService : IDashboardSerivce
 
     public async Task<IEnumerable<TrendDataDto>> GetTrendChartByMonthAsync(DashboardRequestDto request)
     {
-        var dataSnapshots = _context.EclDataSnapshot.AsNoTracking().Where(d => d.Year == request.Year);
+        var dataSnapshots = _context.Loans.AsNoTracking().Where(d => d.Year == request.Year);
 
         var chart3Data = await dataSnapshots
                           .GroupBy(g => g.Month)
@@ -192,7 +191,7 @@ public class DashboardService : IDashboardSerivce
 
     public async Task<IEnumerable<PDDistributionDto>> GetPDDistributionBySegmentAsync(DashboardRequestDto request)
     {
-        var dataSnapshots = _context.EclDataSnapshot.AsNoTracking();
+        var dataSnapshots = _context.Loans.AsNoTracking();
 
         dataSnapshots = dataSnapshots.Where(d => d.Year == request.Year);
         if (request.Month.HasValue)

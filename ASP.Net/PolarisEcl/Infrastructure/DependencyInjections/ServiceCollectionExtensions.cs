@@ -4,6 +4,7 @@ using Microsoft.Extensions.DependencyInjection;
 using PolarisEcl.Application.Common.Interfaces;
 using PolarisEcl.Infrastructure.Data;
 using PolarisEcl.Infrastructure.Security;
+using PolarisEcl.Infrastructure.Services;
 
 namespace PolarisEcl.Infrastructure.DependencyInjections;
 
@@ -19,6 +20,7 @@ public static class ServiceCollectionExtensions
 
         services.AddScoped<IJwtTokenGenerator, JwtTokenGenerator>();
         services.AddScoped<IPasswordHasher, BCryptPasswordHasher>();
+        services.AddScoped<IFileStorageService, LocalFileStorage>();
 
         return services;
     }

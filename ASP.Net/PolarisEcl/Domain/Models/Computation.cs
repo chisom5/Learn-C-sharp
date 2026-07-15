@@ -4,7 +4,7 @@ namespace PolarisEcl.Domain.Models;
 public class ECLComputation
 {
     public Guid Id { get; set; }
-    public string Name { get; set; } = string.Empty;
+    public string ComputationName { get; set; } = string.Empty;
     public ComputationStatus Status { get; set; }
     public DateTime ReportingPeriod { get; set; }
     public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
@@ -25,5 +25,5 @@ public class ECLComputation
 
     public IReadOnlyCollection<ComputationFile> Files { get; set; } = []; //one-to-many
     public ECLReport? ECLReport { get; set; } //one-to-one relationship
-  
+    public ICollection<StageOverride> StageOverrides { get; set; } = [];
 }

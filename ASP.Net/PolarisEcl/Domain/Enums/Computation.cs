@@ -22,6 +22,6 @@ public enum MacroeconomicAdjustmentFactorType
 
 public enum FileType
 {
-    PdInput = 1,
+    MacroInput = 1,
     PdPoolInput = 2
 }

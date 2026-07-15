@@ -8,6 +8,8 @@ public class EclReportRowConfiguration : IEntityTypeConfiguration<EclReportRow>
 {
     public void Configure(EntityTypeBuilder<EclReportRow> builder)
     {
+        builder.ToTable("EclReportRows");
+
         builder.HasKey(r => r.Id);
 
         builder.Property(r => r.ProductLabel)
@@ -15,19 +17,29 @@ public class EclReportRowConfiguration : IEntityTypeConfiguration<EclReportRow>
             .HasMaxLength(150);
 
         builder.Property(r => r.Dimension)
+        .IsRequired()
             .HasConversion<string>()
             .HasMaxLength(50);
 
+        builder.Property(r => r.ECL)
+                    .IsRequired()
+                    .HasDefaultValue(0);
+
+        builder.Property(r => r.EAD)
+            .IsRequired()
+            .HasDefaultValue(0);
+
         // Long mappings (bigint) don't need scale/precision, but decimals do!
         builder.Property(r => r.CoverageRatio)
-            .HasPrecision(18, 6); 
+            .IsRequired()
+            .HasPrecision(18, 6);
 
         // 3. Relationships (The Many-to-One side)
         builder.HasOne(r => r.ECLReport)
-            .WithMany(report => report.Rows) 
+            .WithMany(report => report.Rows)
             .HasForeignKey(r => r.ReportId)
-            .OnDelete(DeleteBehavior.Cascade); 
-            
+            .OnDelete(DeleteBehavior.Cascade);
+
         // 4. Performance Optimization: Indexing
         // Since you'll almost always query rows by their ReportId to display them in a grid,
         // a database index on ReportId makes lookups lightning fast.

@@ -12,9 +12,11 @@
     <PackageVersion Include="Microsoft.IdentityModel.Tokens" Version="8.19.1" />
     <!-- OPENAPI -->
     <PackageVersion Include="Microsoft.AspNetCore.OpenApi" Version="10.0.9" />
+    <PackageVersion Include="Microsoft.OpenApi" Version="2.7.5" />
     <!-- HASHING -->
     <PackageVersion Include="BCrypt.Net-Next" Version="4.2.0" />
     <PackageVersion Include="Scalar.AspNetCore" Version="2.16.4" />
+    <PackageVersion Include="Serilog.AspNetCore" Version="10.0.0" />
     <PackageVersion Include="System.Linq.Dynamic.Core" Version="1.7.2" />
   </ItemGroup>
 </Project>

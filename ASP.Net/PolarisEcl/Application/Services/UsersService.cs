@@ -2,9 +2,9 @@ using Microsoft.EntityFrameworkCore;
 using PolarisEcl.Application.Common.Interfaces;
 using PolarisEcl.Application.Common.Dtos;
 using PolarisEcl.Domain.Models;
-using PolarisEcl.Domain.Enums;
 using PolarisEcl.Domain.Exceptions;
 using PolarisEcl.Application.Common;
+using PolarisEcl.Application.Common.Wrappers;
 
 namespace PolarisEcl.Application.Services;
 
@@ -56,7 +56,7 @@ public class UsersService : IUsersService
     {
         var totalRecords = await _context.Users.CountAsync();
 
-        var result = await _context.Users.ApplyPagination(query.PageNum, query.PageSize).ToListAsync();
+        var result = await _context.Users.OrderBy(d => d.Id).ApplyPagination(query.PageNum, query.PageSize).ToListAsync();
 
         var data = result.Select(user => new AllUsersResponseDto
         {

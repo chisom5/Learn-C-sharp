@@ -2,8 +2,8 @@ using Microsoft.EntityFrameworkCore;
 using PolarisEcl.Application.Common.Interfaces;
 using PolarisEcl.Application.Common.Dtos;
 using PolarisEcl.Domain.Models;
-using PolarisEcl.Domain.Enums;
 using PolarisEcl.Domain.Exceptions;
+using Microsoft.Extensions.Logging;
 
 namespace PolarisEcl.Application.Services;
 
@@ -12,14 +12,16 @@ public class AuthService : IAuthService
     private readonly IAppDbContext _context;
     private readonly IPasswordHasher _passwordHasher;
     private readonly IJwtTokenGenerator _jwtTokenGenerator;
+    private readonly ILogger<AuthService> _logger;
 
     public AuthService(IAppDbContext context,
             IPasswordHasher passwordHasher,
-            IJwtTokenGenerator jwtTokenGenerator)
+            IJwtTokenGenerator jwtTokenGenerator, ILogger<AuthService> logger)
     {
         _context = context;
         _passwordHasher = passwordHasher;
         _jwtTokenGenerator = jwtTokenGenerator;
+        _logger = logger;
     }
 
     public async Task<LoginResponseDto> LoginAsync(LoginRequestDto request)
@@ -28,11 +30,13 @@ public class AuthService : IAuthService
 
         if (user is null || !_passwordHasher.VerifyPassword(request.Password, user.PasswordHash))
         {
+            _logger.LogWarning($"Authentication failed for email: {request.Email}", request.Email);
             throw new UnauthorizedException("Invalid Email or password");
         }
 
         if (!user.IsActive)
         {
+            _logger.LogWarning($"Authentication failed: Account is deactivation. for {request.Email}");
             throw new UnauthorizedException("The Account is deactivated.");
         }
 

@@ -5,7 +5,7 @@ namespace PolarisEcl.Domain.Models;
 public class ComputationFile
 {
     public Guid Id { get; set; }
-    public Guid ComputationId { get; set; } 
+    public Guid? ComputationId { get; set; } 
     public ECLComputation ECLComputation { get; set; } = null!;
     public FileType File { get; set; }
     public string FileName { get; set; } = string.Empty;

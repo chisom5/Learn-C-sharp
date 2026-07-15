@@ -8,21 +8,29 @@ public class RefreshTokenConfiguration : IEntityTypeConfiguration<RefreshToken>
 {
     public void Configure(EntityTypeBuilder<RefreshToken> builder)
     {
+        builder.ToTable("RefreshTokens");
+
         builder.HasKey(t => t.Id);
 
         builder.Property(t => t.Token)
             .IsRequired();
 
         builder.Property(t => t.CreatedAt)
-            .IsRequired();
+            .IsRequired()
+            .HasColumnType("timestamp with time zone")
+            .HasDefaultValueSql("CURRENT_TIMESTAMP");
 
         builder.Property(t => t.Expires)
-            .IsRequired();
+            .IsRequired()
+            .HasColumnType("timestamp with time zone");
 
 
-        builder.Property(t => t.Revoked);
+        builder.Property(t => t.Revoked)
+        .IsRequired(false)
+        .HasColumnType("timestamp with time zone");
 
-        builder.Property(t => t.ReplacedByToken);
+        builder.Property(t => t.ReplacedByToken)
+        .IsRequired(false);
 
         // RELATIONSHIP  ---
         builder.HasOne(t => t.User)

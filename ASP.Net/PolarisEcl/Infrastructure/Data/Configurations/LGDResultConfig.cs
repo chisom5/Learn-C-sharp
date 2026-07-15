@@ -9,6 +9,8 @@ public class LGDResultConfiguration : IEntityTypeConfiguration<LGDResult>
 {
     public void Configure(EntityTypeBuilder<LGDResult> builder)
     {
+        builder.ToTable("LGDResults");
+
         builder.HasKey(l => l.Id);
 
         builder.Property(l => l.SectorName)
@@ -16,6 +18,7 @@ public class LGDResultConfiguration : IEntityTypeConfiguration<LGDResult>
         .HasMaxLength(150);
 
         builder.Property(l => l.LgdValue)
+        .IsRequired()
         .HasPrecision(18, 2);
 
         // --- RELATIONSHIPS ---
