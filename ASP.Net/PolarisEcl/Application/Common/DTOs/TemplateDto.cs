@@ -1,6 +1,5 @@
 using Microsoft.AspNetCore.Http;
 using PolarisEcl.Domain.Enums;
-using PolarisEcl.Domain.Models;
 
 namespace PolarisEcl.Application.Common.Interfaces;
 

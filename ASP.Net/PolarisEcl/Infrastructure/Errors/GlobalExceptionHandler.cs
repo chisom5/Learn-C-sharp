@@ -61,7 +61,7 @@ public class GlobalExceptionHandler : IExceptionHandler
             Status = statusCode,
             Title = title,
             Detail = exception.Message,
-            Instance = httpContext.Request.Path
+            Instance = httpContext.Request.Path,
         };
 
         if (validationErrors != null)

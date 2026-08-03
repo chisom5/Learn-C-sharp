@@ -41,6 +41,7 @@ public class AuthService : IAuthService
         }
 
         (string token, DateTime expiresAt) = _jwtTokenGenerator.GenerateToken(user);
+        _logger.LogInformation($"[DEBUG] Current UTC: {DateTime.UtcNow:o} | Expiry UTC: {expiresAt:o}");
         (string refreshToken, DateTime refreshExpiry) = _jwtTokenGenerator.GenerateRefreshToken();
 
         var dbRecord = new RefreshToken
@@ -55,6 +56,8 @@ public class AuthService : IAuthService
         _context.RefreshToken.Add(dbRecord);
         await _context.SaveChangesAsync();
 
+        _logger.LogInformation($"Login successful");
+
         return new LoginResponseDto
         {
             Email = user.Email,
@@ -68,12 +71,13 @@ public class AuthService : IAuthService
         };
     }
 
-    public async Task<LoginResponseDto> ValidateRefreshTokenAsync(RefreshTokenRequestDto request)
+    public async Task<RefreshTokenResponseDto> ValidateRefreshTokenAsync(RefreshTokenRequestDto request)
     {
         var storedToken = await _context.RefreshToken.Include(t => t.User).SingleOrDefaultAsync(t => t.Token == request.Token);
 
         if (storedToken is null || !storedToken.IsActive)
         {
+            _logger.LogWarning($"Invalid or expired session.");
             throw new UnauthorizedException("Invalid or expired session. Please log in again.");
         }
 
@@ -84,6 +88,7 @@ public class AuthService : IAuthService
             storedToken.Revoked = DateTime.UtcNow;
             await _context.SaveChangesAsync();
 
+            _logger.LogWarning($"Access denied. account deactivated or disabled.");
             throw new UnauthorizedException("Access denied. Your account has been deactivated or disabled.");
         }
 
@@ -106,13 +111,9 @@ public class AuthService : IAuthService
         _context.RefreshToken.Add(newdbRecord);
         await _context.SaveChangesAsync();
 
-        return new LoginResponseDto
+        _logger.LogInformation($"New access token generated.");
+        return new RefreshTokenResponseDto
         {
-            Email = user.Email,
-            FirstName = user.FirstName,
-            LastName = user.LastName,
-            Role = user.Role,
-            IsActive = user.IsActive,
             AccessToken = newAccessToken,
             ExpiresIn = expiresAt,
             RefreshToken = newRefreshTokenString

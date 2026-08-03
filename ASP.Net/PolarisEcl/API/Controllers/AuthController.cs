@@ -26,7 +26,7 @@ public class AuthController : ControllerBase
         {
             throw new BadRequestException("", validatorResult.ToDictionary());
         }
-        LoginResponseDto response = await _authService.ValidateRefreshTokenAsync(request);
+        RefreshTokenResponseDto response = await _authService.ValidateRefreshTokenAsync(request);
 
         return Ok(response);
     }

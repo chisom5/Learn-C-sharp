@@ -6,7 +6,8 @@ public class ECLComputation
     public Guid Id { get; set; }
     public string ComputationName { get; set; } = string.Empty;
     public ComputationStatus Status { get; set; }
-    public DateTime ReportingPeriod { get; set; }
+    public DateOnly ReportingStartDate { get; set; }
+    public DateOnly ReportingEndDate { get; set; }
     public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
     public DateTime? ArchivedAt { get; set; }
     public Guid ComputedById { get; set; }

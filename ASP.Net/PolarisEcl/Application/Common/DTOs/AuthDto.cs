@@ -48,6 +48,13 @@ public class LoginResponseDto
     public string? RefreshToken { get; set; }
 }
 
+public class RefreshTokenResponseDto
+{
+     public string AccessToken { get; set; } = string.Empty;
+    public DateTime ExpiresIn { get; set; }
+    public string RefreshToken { get; set; } = string.Empty;
+    
+}
 public class UpdateUserResponseDto
 {
     public string FirstName { get; set; } = string.Empty;

@@ -13,8 +13,7 @@ public class DashboardRequestDtoValidator : AbstractValidator<DashboardRequestDt
 
         RuleFor(x => x.Year)
         .Cascade(CascadeMode.Stop)
-        .NotEmpty()
-        .ValidFinancialYear(10)
-        .WithMessage("Year is required to load dashboard analytics.");
+        .NotEmpty().WithMessage("Year is required to load dashboard analytics.")
+        .ValidFinancialYear(9);
     }
 } 

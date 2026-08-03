@@ -13,6 +13,8 @@ public static class ServiceCollectionExtension
         services.AddScoped<IUsersService, UsersService>();
         services.AddScoped<IDashboardSerivce, DashboardService>();
         services.AddScoped<ITemplateService, TemplateService>();
+        services.AddScoped<ISettingsService, SettingServices>();
+        services.AddScoped<IEclAnalysisService, EclAnalysisService>();
 
         return services;
     }

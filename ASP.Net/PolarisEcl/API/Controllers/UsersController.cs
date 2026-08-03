@@ -14,11 +14,11 @@ namespace PolarisEcl.Controllers;
 [Route("api/[controller]")]
 [Authorize(Roles = "Admin")]
 [ServiceFilter(typeof(ActiveUserFilter))]
-public class UserController : ControllerBase
+public class UserController : BaseApiController
 {
     private readonly IUsersService _authService;
 
-    public UserController(IUsersService authService)
+    public UserController(IUsersService authService, IAppDbContext context): base(context)
     {
         _authService = authService;
     }
@@ -71,9 +71,7 @@ public class UserController : ControllerBase
             throw new BadRequestException("A valid user Id must be provided.");
         }
 
-        Guid currentUserId = GenerateCurrentUserId();
-
-        var response = await _authService.DeActivateUserRoleAsync(userId, currentUserId);
+        var response = await _authService.DeActivateUserRoleAsync(userId, CurrentUserId);
         return Ok(response);
     }
 
@@ -86,9 +84,7 @@ public class UserController : ControllerBase
             throw new BadRequestException("A valid user Id must be provided.");
         }
 
-        Guid currentUserId = GenerateCurrentUserId();
-
-        var response = await _authService.DeleteAUserAsync(userId, currentUserId);
+        var response = await _authService.DeleteAUserAsync(userId, CurrentUserId);
         return Ok(response);
     }
 
@@ -102,28 +98,16 @@ public class UserController : ControllerBase
             throw new BadRequestException("", validatorResult.ToDictionary());
         }
 
-        Guid currentUserId = GenerateCurrentUserId();
-
         try
         {
-            var resultMessage = await _authService.BulkDeleteUsersAsync(request.userIds, currentUserId);
+            var resultMessage = await _authService.BulkDeleteUsersAsync(request.userIds, CurrentUserId);
             return Ok(new { Message = resultMessage });
         }
         catch (ArgumentException ex)
         {
-            return BadRequest(ex.Message);
+            throw new ArgumentException(ex.Message);
         }
 
     }
 
-    private Guid GenerateCurrentUserId()
-    {
-        string? rawUserId = User.FindFirstValue(ClaimTypes.NameIdentifier) ?? User.FindFirstValue("sub");
-        if (rawUserId == null || !Guid.TryParse(rawUserId, out Guid currentUserId))
-        {
-            throw new UnauthorizedException("User identity is missing or invalid.");
-        }
-
-        return currentUserId;
-    }
 }

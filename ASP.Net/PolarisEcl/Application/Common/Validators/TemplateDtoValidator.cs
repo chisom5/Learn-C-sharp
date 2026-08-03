@@ -10,6 +10,7 @@ public class TemplateDtoValidator : AbstractValidator<UploadTemplateRequestDto>
     public TemplateDtoValidator()
     {
         RuleFor(x => x.File)
+        .Cascade(CascadeMode.Stop)
             .NotNull().WithMessage("File is required.")
             .Must(file => file.Length > 0).WithMessage("File cannot be empty.")
             .Must(x => Path.GetExtension(x.FileName).Equals(".xlsx", StringComparison.OrdinalIgnoreCase)

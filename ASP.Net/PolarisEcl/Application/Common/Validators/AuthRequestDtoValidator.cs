@@ -44,6 +44,7 @@ public class RegisterRequestDtoValidator : AbstractValidator<RegisterRequestDto>
         .WithMessage("Password must be at least 6 characters long.");
 
         RuleFor(x => x.Role)
+        .Cascade(CascadeMode.Stop)
         .NotEmpty()
         .IsInEnum()
         .WithMessage("A valid user role is required.");

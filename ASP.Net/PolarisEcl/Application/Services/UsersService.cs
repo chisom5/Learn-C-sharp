@@ -5,6 +5,7 @@ using PolarisEcl.Domain.Models;
 using PolarisEcl.Domain.Exceptions;
 using PolarisEcl.Application.Common;
 using PolarisEcl.Application.Common.Wrappers;
+using Microsoft.Extensions.Logging;
 
 namespace PolarisEcl.Application.Services;
 
@@ -12,12 +13,14 @@ public class UsersService : IUsersService
 {
     private readonly IAppDbContext _context;
     private readonly IPasswordHasher _passwordHasher;
+    private readonly ILogger<UsersService> _logger;
 
     public UsersService(IAppDbContext context,
-            IPasswordHasher passwordHasher)
+            IPasswordHasher passwordHasher, ILogger<UsersService> logger)
     {
         _context = context;
         _passwordHasher = passwordHasher;
+        _logger = logger;
     }
 
     public async Task<string> RegisterAsync(RegisterRequestDto request)
@@ -26,6 +29,7 @@ public class UsersService : IUsersService
 
         if (userExist is not null)
         {
+            _logger.LogWarning($"Email already registered.");
             throw new BadRequestException("Email already registered.");
         }
 
@@ -48,6 +52,7 @@ public class UsersService : IUsersService
         _context.Users.Add(newUser);
         await _context.SaveChangesAsync();
 
+        _logger.LogInformation($"Registration completed.");
         return "Registration Completed.";
     }
 
@@ -73,6 +78,7 @@ public class UsersService : IUsersService
 
         int totalPages = (int)Math.Ceiling((double)totalRecords / query.PageSize);
 
+        _logger.LogInformation($"all users paginated data fetched.");
         return new PageResponse<AllUsersResponseDto>
         {
             Data = data,
@@ -89,6 +95,7 @@ public class UsersService : IUsersService
         var existingUser = await _context.Users.FindAsync(userId);
         if (existingUser is null)
         {
+            _logger.LogWarning($"users not found to perform update.");
             throw new NotFoundException($"User with ID {userId} was not found.");
         }
 
@@ -101,6 +108,7 @@ public class UsersService : IUsersService
 
         await _context.SaveChangesAsync();
 
+        _logger.LogInformation($"users successfully updated.");
         return new UpdateUserResponseDto
         {
             FirstName = existingUser.FirstName,
@@ -116,23 +124,27 @@ public class UsersService : IUsersService
     {
         if (userId == currentUserId)
         {
+            _logger.LogWarning($"Safety block: You cannot deactivate your own adminstrative account.");
+
             throw new BadRequestException("Safety block: You cannot deactivate your own adminstrative account.");
         }
         var existingUser = await _context.Users.FindAsync(userId);
         if (existingUser is null)
         {
+            _logger.LogWarning($"User record not found");
             throw new NotFoundException($"User not found.");
         }
 
         if (existingUser.Email == "admin@polarisecl.com")
         {
+            _logger.LogWarning($"Safety block: The system root account cannot be deactivated.");
             throw new BadRequestException("Safety block: The system root account cannot be deactivated.");
         }
         existingUser.IsActive = !existingUser.IsActive;
         existingUser.UpdatedAt = DateTime.UtcNow;
 
         await _context.SaveChangesAsync();
-
+        _logger.LogInformation($"User account deactivated or activated");
         return !existingUser.IsActive ? "User Account Successfully Deactivated." : "User Account Successfully Activated";
     }
 
@@ -144,10 +156,12 @@ public class UsersService : IUsersService
 
         if (safeUserIdsToDelete.Count == 0)
         {
+            _logger.LogWarning($"can't delete your own logged-in account.");
             throw new ArgumentException("Operation cancelled. You cannot delete your own logged-in account.");
         }
 
         await _context.Users.Where(u => safeUserIdsToDelete.Contains(u.Id)).ExecuteUpdateAsync(d => d.SetProperty(u => u.IsDeleted, true));
+        _logger.LogInformation($"successfully disabled.");
         return $"{safeUserIdsToDelete.Count} User(s) Accounts Successfully Disabled.";
     }
 
@@ -155,6 +169,7 @@ public class UsersService : IUsersService
     {
         if (userId == currentUserId)
         {
+            _logger.LogWarning($"Safety block: You cannot disable your own adminstrative account.");
             throw new BadRequestException("Safety block: You cannot disable your own adminstrative account.");
         }
 
@@ -163,6 +178,7 @@ public class UsersService : IUsersService
 
         if (existingUser.Email == "admin@polarisecl.com")
         {
+            _logger.LogWarning($"Safety block: The system root account cannot be disabled.");
             throw new BadRequestException("Safety block: The system root account cannot be disabled.");
         }
 
@@ -170,6 +186,7 @@ public class UsersService : IUsersService
         existingUser.UpdatedAt = DateTime.UtcNow;
         await _context.SaveChangesAsync();
 
+        _logger.LogInformation($"Account deleted.");
         return "User Account Successfully Disabled.";
     }
 

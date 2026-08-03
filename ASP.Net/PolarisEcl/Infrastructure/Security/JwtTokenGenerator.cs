@@ -2,6 +2,7 @@
 using System.Security.Claims;
 using System.Security.Cryptography;
 using System.Text;
+using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.JsonWebTokens;
 using Microsoft.IdentityModel.Tokens;
@@ -14,31 +15,33 @@ namespace PolarisEcl.Infrastructure.Security;
 public class JwtTokenGenerator : IJwtTokenGenerator
 {
     private readonly JwtSettings _jwtSettings;
+    private readonly ILogger<JwtTokenGenerator> _logger;
 
-    public JwtTokenGenerator(IOptions<JwtSettings> jwtOption)
+    public JwtTokenGenerator(IOptions<JwtSettings> jwtSettings, ILogger<JwtTokenGenerator> logger)
     {
-        _jwtSettings = jwtOption.Value;
+        _jwtSettings = jwtSettings?.Value ?? throw new ArgumentNullException(nameof(jwtSettings));
+        _logger = logger;
     }
+
 
     public (string, DateTime) GenerateToken(User user)
     {
+        _logger.LogInformation($"ExpiryInMinutes setting value: {_jwtSettings.ExpiryInMinutes}");
+
         var expiresAt = DateTime.UtcNow.AddMinutes(_jwtSettings.ExpiryInMinutes);
 
-        // here we build the claim. it is a piece of info that we store inside the jwt token
         var claims = new[]
         {
-            new Claim(JwtRegisteredClaimNames.Sub, user.Id.ToString()),
-            new Claim(JwtRegisteredClaimNames.Email, user.Email),
-            new Claim(ClaimTypes.Role, user.Role.ToString()),
-            new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
-            new Claim("FirstName", user.FirstName)
-        };
+        new Claim(JwtRegisteredClaimNames.Sub, user.Id.ToString()),
+        new Claim(JwtRegisteredClaimNames.Email, user.Email),
+        new Claim(ClaimTypes.Role, user.Role.ToString()),
+        new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
+        new Claim("FirstName", user.FirstName)
+    };
 
-        //create a security key from my secret string in jwtsettings.
         var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_jwtSettings.Secret));
         var cred = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
 
-        // metadata  property of the token
         var tokenDescriptor = new SecurityTokenDescriptor
         {
             Subject = new ClaimsIdentity(claims),
@@ -48,21 +51,19 @@ public class JwtTokenGenerator : IJwtTokenGenerator
             SigningCredentials = cred
         };
 
-        // serialise how we want the token to look.
         var tokenHandler = new JsonWebTokenHandler();
         var token = tokenHandler.CreateToken(tokenDescriptor);
 
         return (token, expiresAt);
     }
 
-
     public (string, DateTime) GenerateRefreshToken()
     {
         var expiresAt = DateTime.UtcNow.AddDays(_jwtSettings.RefreshTokenValidityInDays);
 
         var randomBytes = RandomNumberGenerator.GetBytes(64);
-        
-        string refreshToken =  Convert.ToBase64String(randomBytes);
+
+        string refreshToken = Convert.ToBase64String(randomBytes);
 
         return (refreshToken, expiresAt);
 

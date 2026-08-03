@@ -17,6 +17,11 @@ public interface IAppDbContext
     DbSet<EADResult> EADResults { get; set; }
     DbSet<Loan> Loans { get; set; }
     DbSet<StageOverride> StageOverrides { get; set; }
+    DbSet<Segment> Segments { get; set; }
+    DbSet<Product> Products { get; set; }
+    DbSet<RegressionParameter> RegressionParameters{ get; set; }
+    DbSet<ExpectedCorrelation> ExpectedCorrelations { get; set; }
+    DbSet<CollateralType> CollateralTypes { get; set; }
 
     Task<int> SaveChangesAsync(CancellationToken cancellationToken = default);
 }

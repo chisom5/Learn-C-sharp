@@ -43,7 +43,10 @@ public class EclComputationConfiguration : IEntityTypeConfiguration<ECLComputati
         builder.Property(c => c.PdWeightWorstcase).IsRequired().HasDefaultValue(0);
 
         // --- Dates & Audit Logs ---
-        builder.Property(x => x.ReportingPeriod)
+        builder.Property(x => x.ReportingStartDate)
+            .IsRequired(); 
+
+        builder.Property(x => x.ReportingEndDate)
             .IsRequired(); 
 
         builder.Property(x => x.CreatedAt)
@@ -83,6 +86,7 @@ public class EclComputationConfiguration : IEntityTypeConfiguration<ECLComputati
 
         // --- PERFORMANCE INDEXES ---
         builder.HasIndex(x => x.Status);
-        builder.HasIndex(x => x.ReportingPeriod);
+        builder.HasIndex(x => x.ReportingStartDate);
+        builder.HasIndex(x => x.ReportingEndDate);
     }
 }

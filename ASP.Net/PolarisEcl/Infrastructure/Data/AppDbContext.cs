@@ -17,6 +17,11 @@ public class AppDbContext(DbContextOptions options) : DbContext(options), IAppDb
     public DbSet<EADResult> EADResults { get; set; }
     public DbSet<Loan> Loans { get; set; }
     public DbSet<StageOverride> StageOverrides { get; set; }
+    public DbSet<Segment> Segments { get; set; }
+    public DbSet<Product> Products { get; set; }
+    public DbSet<RegressionParameter> RegressionParameters { get; set; }
+    public DbSet<ExpectedCorrelation> ExpectedCorrelations { get; set; }
+    public DbSet<CollateralType> CollateralTypes { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {

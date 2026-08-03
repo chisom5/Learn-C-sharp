@@ -38,7 +38,7 @@ public class TemplateController : ControllerBase
         var currentUserIdStr = User.FindFirstValue(ClaimTypes.NameIdentifier) ?? User.FindFirstValue("sub");
         if (!Guid.TryParse(currentUserIdStr, out var userId))
         {
-            return Unauthorized("Unable to resolve valid user session token.");
+            throw new UnauthorizedException("Unable to resolve valid user session token.");
         }
 
         var response = await _templateService.UploadTemplateAsync(request, userId);

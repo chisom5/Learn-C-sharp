@@ -15,6 +15,8 @@ using PolarisEcl.Infrastructure.Data;
 using FluentValidation;
 using PolarisEcl.Application.Common.Validators;
 using Serilog;
+using System.Diagnostics;
+using Microsoft.AspNetCore.Mvc;
 
 Log.Logger = new LoggerConfiguration().WriteTo.Console().CreateBootstrapLogger();
 
@@ -70,7 +72,33 @@ try
             {
                 Console.WriteLine("JWT Auth Failed: " + context.Exception.Message);
                 return Task.CompletedTask;
+            },
+            OnChallenge = async context =>
+            {
+                context.HandleResponse();
+                var httpContext = context.HttpContext;
+
+                var problemDetailsService = httpContext.RequestServices.GetRequiredService<IProblemDetailsService>();
+
+                httpContext.Response.StatusCode = StatusCodes.Status401Unauthorized;
+
+                var responseEnvelope = new ProblemDetails
+                {
+                    Status = StatusCodes.Status401Unauthorized,
+                    Title = "Unauthorized Access",
+                    Detail = string.IsNullOrEmpty(context.ErrorDescription)
+                               ? "You are not authorized to access this resource."
+                               : context.ErrorDescription,
+                    Instance = httpContext.Request.Path
+                };
+
+                await problemDetailsService.TryWriteAsync(new ProblemDetailsContext
+                {
+                    HttpContext = httpContext,
+                    ProblemDetails = responseEnvelope
+                });
             }
+
         };
     });
 
@@ -149,8 +177,8 @@ try
         app.UseHttpsRedirection();
     }
 
-    app.UseExceptionHandler();
     app.UseCors("AllowAll");
+    app.UseExceptionHandler();
     app.UseSerilogRequestLogging();
 
     // Configure the HTTP request pipeline.

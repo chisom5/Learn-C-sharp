@@ -25,3 +25,5 @@ public enum FileType
     MacroInput = 1,
     PdPoolInput = 2
 }
+
+public enum CorrelationDirection { Positive, Negative }
