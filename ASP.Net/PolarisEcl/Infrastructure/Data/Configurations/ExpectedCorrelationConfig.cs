@@ -26,7 +26,7 @@ public class ExpectedCorrelationConfig : IEntityTypeConfiguration<ExpectedCorrel
 
         builder.Property(ec => ec.MonetaryPolicyRate)
             .IsRequired();
-            
+
         builder.Property(ec => ec.IsActive)
             .IsRequired();
 
@@ -40,5 +40,8 @@ public class ExpectedCorrelationConfig : IEntityTypeConfiguration<ExpectedCorrel
             .WithMany()
             .HasForeignKey(ec => ec.UpdatedById)
             .OnDelete(DeleteBehavior.Restrict);
+
+        builder.HasIndex(ec => ec.IsActive);
+        builder.HasQueryFilter(ec => ec.IsActive);
     }
 }

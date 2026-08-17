@@ -1,3 +1,4 @@
+using Asp.Versioning;
 using FluentValidation;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -5,10 +6,11 @@ using PolarisEcl.Application.Common.Dtos;
 using PolarisEcl.Application.Common.Interfaces;
 using PolarisEcl.Domain.Exceptions;
 
-namespace PolarisEcl.Controllers;
+namespace PolarisEcl.Controllers.v1;
 
 [ApiController]
-[Route("api/[controller]")]
+[ApiVersion("1.0")]
+[Route("api/v{version:apiVersion}/[controller]")]
 public class AnalysisController : BaseApiController
 {
     private readonly IEclAnalysisService _analysisService;
@@ -30,7 +32,7 @@ public class AnalysisController : BaseApiController
         var user = await GetCurrentUserAsync();
         var result = await _analysisService.AddNewComputationAsync(request, user);
 
-        return Ok(result);
+        return Created(string.Empty, result);
     }
 
     [Authorize(Roles = "Staff")]

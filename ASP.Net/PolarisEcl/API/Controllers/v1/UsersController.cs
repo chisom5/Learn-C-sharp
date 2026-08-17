@@ -8,17 +8,17 @@ using PolarisEcl.Filters;
 using FluentValidation;
 using PolarisEcl.Application.Common.Wrappers;
 
-namespace PolarisEcl.Controllers;
+namespace PolarisEcl.Controllers.v1;
 
 [ApiController]
-[Route("api/[controller]")]
+[Route("api/v{version:apiVersion}/[controller]")]
 [Authorize(Roles = "Admin")]
 [ServiceFilter(typeof(ActiveUserFilter))]
 public class UserController : BaseApiController
 {
     private readonly IUsersService _authService;
 
-    public UserController(IUsersService authService, IAppDbContext context): base(context)
+    public UserController(IUsersService authService, IAppDbContext context) : base(context)
     {
         _authService = authService;
     }
@@ -42,7 +42,7 @@ public class UserController : BaseApiController
         }
 
         var result = await _authService.RegisterAsync(request);
-        return Ok(new { message = result });
+        return Created(string.Empty, new { message = result });
     }
 
     [HttpPatch("update/{userId:guid}")]

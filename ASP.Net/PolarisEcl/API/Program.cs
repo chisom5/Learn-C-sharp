@@ -1,5 +1,4 @@
 using System.Text;
-using Microsoft.AspNetCore.OpenApi;
 using Microsoft.OpenApi;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using System.Security.Claims;
@@ -15,8 +14,8 @@ using PolarisEcl.Infrastructure.Data;
 using FluentValidation;
 using PolarisEcl.Application.Common.Validators;
 using Serilog;
-using System.Diagnostics;
 using Microsoft.AspNetCore.Mvc;
+using Asp.Versioning;
 
 Log.Logger = new LoggerConfiguration().WriteTo.Console().CreateBootstrapLogger();
 
@@ -26,10 +25,27 @@ try
 
     var builder = WebApplication.CreateBuilder(args);
 
+    // api version
+    builder.Services.AddApiVersioning(options =>
+    {
+        options.AssumeDefaultVersionWhenUnspecified = true;
+        options.DefaultApiVersion = new ApiVersion(1, 0);
+        options.ReportApiVersions = true;
+        options.ApiVersionReader = new UrlSegmentApiVersionReader(); // url type versioning
+
+    }).AddMvc().AddApiExplorer(options =>
+    {
+        options.GroupNameFormat = "'v'VVV";
+
+        options.SubstituteApiVersionInUrl = true;
+    });
+
+    // serilog
     builder.Services.AddSerilog((services, loggerConfiguration) => loggerConfiguration
             .ReadFrom.Configuration(builder.Configuration)
             .ReadFrom.Services(services));
 
+    // cors
     builder.Services.AddCors(options =>
         options.AddPolicy("AllowAll", policy =>
         {
@@ -42,7 +58,7 @@ try
 
     builder.Services.Configure<JwtSettings>(builder.Configuration.GetSection("JwtSettings"));
 
-    // configure jwt authentication middleware.
+    // authentication
     builder.Services.AddAuthentication(option =>
     {
         option.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
@@ -112,8 +128,8 @@ try
     builder.Services.AddControllers(options =>
     {
         options.Filters.Add<ResponseWrapperFilter>();
+        options.ReturnHttpNotAcceptable = true; // return 406 error if the request is not accepted instead of defaulting to JSON.
     });
-
 
     builder.Services.AddOpenApi(options =>
     {
@@ -172,14 +188,25 @@ try
 
     var app = builder.Build();
 
+    app.UseExceptionHandler();
+
     if (!app.Environment.IsDevelopment())
     {
         app.UseHttpsRedirection();
     }
-
     app.UseCors("AllowAll");
-    app.UseExceptionHandler();
-    app.UseSerilogRequestLogging();
+    app.UseSerilogRequestLogging(options =>
+    {
+        options.GetLevel = (httpContext, elapsed, ex) =>
+        {
+            if (httpContext.Response.StatusCode < 500)
+            {
+                return Serilog.Events.LogEventLevel.Information;
+            }
+
+            return ex != null ? Serilog.Events.LogEventLevel.Error : Serilog.Events.LogEventLevel.Information;
+        };
+    });
 
     // Configure the HTTP request pipeline.
     if (app.Environment.IsDevelopment())

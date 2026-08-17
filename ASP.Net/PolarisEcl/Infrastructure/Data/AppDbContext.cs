@@ -23,6 +23,7 @@ public class AppDbContext(DbContextOptions options) : DbContext(options), IAppDb
     public DbSet<ExpectedCorrelation> ExpectedCorrelations { get; set; }
     public DbSet<CollateralType> CollateralTypes { get; set; }
 
+
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         base.OnModelCreating(modelBuilder);

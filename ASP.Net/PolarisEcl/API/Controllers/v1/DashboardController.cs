@@ -1,4 +1,5 @@
 
+using Asp.Versioning;
 using FluentValidation;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -7,10 +8,11 @@ using PolarisEcl.Application.Common.Interfaces;
 using PolarisEcl.Domain.Exceptions;
 using PolarisEcl.Filters;
 
-namespace PolarisEcl.Controllers;
+namespace PolarisEcl.Controllers.v1;
 
 [ApiController]
-[Route("api/[controller]")]
+[ApiVersion("1.0")]
+[Route("api/v{version:apiVersion}/[controller]")]
 [Authorize(Roles = "Admin, Staff")]
 [ServiceFilter(typeof(ActiveUserFilter))]
 public class DashboardController : ControllerBase

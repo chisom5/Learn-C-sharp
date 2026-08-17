@@ -23,6 +23,7 @@ public static class DbInitializer
                 PasswordHash = passwordHasher.HashPassword("Password@1!"), 
                 Role = UserRole.Admin,
                 IsActive = true,
+                IsDeleted = false,
                 CreatedAt = DateTime.UtcNow,
                 UpdatedAt = DateTime.UtcNow
             };

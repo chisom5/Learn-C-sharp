@@ -3,11 +3,13 @@ using PolarisEcl.Application.Common.Interfaces;
 using PolarisEcl.Application.Common.Dtos;
 using PolarisEcl.Domain.Exceptions;
 using FluentValidation;
+using Asp.Versioning;
 
-namespace PolarisEcl.Controllers;
+namespace PolarisEcl.Controllers.v1;
 
 [ApiController]
-[Route("api/[controller]")]
+[ApiVersion("1.0")]
+[Route("api/v{version:apiVersion}/[controller]")]
 public class AuthController : ControllerBase
 {
     private readonly IAuthService _authService;

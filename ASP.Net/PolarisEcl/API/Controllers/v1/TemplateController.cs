@@ -1,4 +1,5 @@
 using System.Security.Claims;
+using Asp.Versioning;
 using FluentValidation;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -7,11 +8,12 @@ using PolarisEcl.Domain.Enums;
 using PolarisEcl.Domain.Exceptions;
 using PolarisEcl.Filters;
 
-namespace PolarisEcl.Controllers;
+namespace PolarisEcl.Controllers.v1;
 
 
 [ApiController]
-[Route("api/[controller]")]
+[ApiVersion("1.0")]
+[Route("api/v{version:apiVersion}/[controller]")]
 [ServiceFilter(typeof(ActiveUserFilter))]
 public class TemplateController : ControllerBase
 {
@@ -43,7 +45,7 @@ public class TemplateController : ControllerBase
 
         var response = await _templateService.UploadTemplateAsync(request, userId);
 
-        return Ok(new { message = response });
+        return Created(string.Empty, new { message = response });
     }
 
     [Authorize(Roles = "Admin, Staff")]

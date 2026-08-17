@@ -15,7 +15,7 @@ public class SegmentConfig : IEntityTypeConfiguration<Segment>
         builder.Property(s => s.Name)
             .IsRequired()
             .HasMaxLength(500);
-            
+
         builder.Property(s => s.IsActive);
 
         builder.Property(s => s.UpdatedAt)
@@ -28,5 +28,8 @@ public class SegmentConfig : IEntityTypeConfiguration<Segment>
             .WithMany()
             .HasForeignKey(s => s.UpdatedById)
             .OnDelete(DeleteBehavior.Restrict);
+
+        builder.HasIndex(s => s.IsActive);
+        builder.HasQueryFilter(s => s.IsActive);
     }
 }

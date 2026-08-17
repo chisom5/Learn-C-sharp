@@ -1,3 +1,4 @@
+using Asp.Versioning;
 using FluentValidation;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -5,10 +6,11 @@ using PolarisEcl.Application.Common.Dtos;
 using PolarisEcl.Application.Common.Interfaces;
 using PolarisEcl.Domain.Exceptions;
 
-namespace PolarisEcl.Controllers;
+namespace PolarisEcl.Controllers.v1;
 
 [ApiController]
-[Route("api/[controller]")]
+[ApiVersion("1.0")]
+[Route("api/v{version:apiVersion}/[controller]")]
 [Authorize(Roles = "Staff")]
 public class SettingsController : BaseApiController
 {
@@ -37,7 +39,7 @@ public class SettingsController : BaseApiController
         var user = await GetCurrentUserAsync();
         var result = await _settingsService.AddSegmentAsync(request, user);
 
-        return Ok(result);
+        return Created(string.Empty, result);
     }
 
     [HttpPost("product")]
@@ -50,7 +52,7 @@ public class SettingsController : BaseApiController
         }
         var user = await GetCurrentUserAsync();
         var result = await _settingsService.AddProductAsync(productRequestDto, user);
-        return Ok(result);
+       return Created(string.Empty, result);
     }
 
 
@@ -64,7 +66,7 @@ public class SettingsController : BaseApiController
         }
         var user = await GetCurrentUserAsync();
         var result = await _settingsService.AddRegressionParamsAsync(regressionParamsRequestDto, user);
-        return Ok(result);
+       return Created(string.Empty, result);
     }
 
     [HttpPost("expected-correlation")]
@@ -77,7 +79,7 @@ public class SettingsController : BaseApiController
         }
         var user = await GetCurrentUserAsync();
         var result = await _settingsService.AddCorrelationAsync(expectedCorrelationRequestDto, user);
-        return Ok(result);
+        return Created(string.Empty, result);
     }
 
     [HttpPost("collateral-type")]
@@ -90,10 +92,10 @@ public class SettingsController : BaseApiController
         }
         var user = await GetCurrentUserAsync();
         var result = await _settingsService.AddCollateralTypeAsync(collateralTypeRequestDto, user);
-        return Ok(result);
+      return Created(string.Empty, result);
     }
 
-    [HttpPatch("segment/{segmentId}")]
+    [HttpPut("segment/{segmentId}")]
     public async Task<IActionResult> UpdateSegment([FromBody] UpdateSegmentRequestDto request, [FromRoute] Guid segmentId, [FromServices] IValidator<UpdateSegmentRequestDto> validator)
     {
         var validatorResult = await validator.ValidateAsync(request);
@@ -106,7 +108,7 @@ public class SettingsController : BaseApiController
         return Ok(result);
     }
 
-    [HttpPatch("product/{productId}")]
+    [HttpPut("product/{productId}")]
     public async Task<IActionResult> UpdateProduct([FromBody] UpdateProductRequestDto request, [FromRoute] Guid productId, [FromServices] IValidator<UpdateProductRequestDto> validator)
     {
         var validatorResult = await validator.ValidateAsync(request);
@@ -119,7 +121,7 @@ public class SettingsController : BaseApiController
         return Ok(result);
     }
 
-    [HttpPatch("regression-params/{regressionParamId}")]
+    [HttpPut("regression-params/{regressionParamId}")]
     public async Task<IActionResult> UpdateRegressionParams([FromBody] UpdateRegressionParamsRequestDto request, [FromRoute] Guid regressionParamId, [FromServices] IValidator<UpdateRegressionParamsRequestDto> validator)
     {
         var validatorResult = await validator.ValidateAsync(request);
@@ -132,7 +134,7 @@ public class SettingsController : BaseApiController
         return Ok(result);
     }
 
-    [HttpPatch("expected-correlation/{correlationId}")]
+    [HttpPut("expected-correlation/{correlationId}")]
     public async Task<IActionResult> UpdateCorrelation([FromBody] UpdateExpectedCorrelationRequestDto request, [FromRoute] Guid correlationId, [FromServices] IValidator<UpdateExpectedCorrelationRequestDto> validator)
     {
         var validatorResult = await validator.ValidateAsync(request);
@@ -145,7 +147,7 @@ public class SettingsController : BaseApiController
         return Ok(result);
     }
 
-    [HttpPatch("collateral-type/{collateralTypeId}")]
+    [HttpPut("collateral-type/{collateralTypeId}")]
     public async Task<IActionResult> UpdateCollateralType([FromBody] UpdateCollateralTypeRequestDto request, [FromRoute] Guid collateralTypeId, [FromServices] IValidator<UpdateCollateralTypeRequestDto> validator)
     {
         var validatorResult = await validator.ValidateAsync(request);

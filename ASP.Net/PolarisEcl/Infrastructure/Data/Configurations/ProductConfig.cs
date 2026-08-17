@@ -33,5 +33,8 @@ public class ProductConfig : IEntityTypeConfiguration<Product>
             .WithMany()
             .HasForeignKey(p => p.UpdatedById)
             .OnDelete(DeleteBehavior.Restrict);
+
+        builder.HasIndex(p => p.IsActive);
+        builder.HasQueryFilter(p => p.IsActive);
     }
 }
