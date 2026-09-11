@@ -45,7 +45,6 @@ public class RegisterRequestDtoValidator : AbstractValidator<RegisterRequestDto>
 
         RuleFor(x => x.Role)
         .Cascade(CascadeMode.Stop)
-        .NotEmpty()
         .IsInEnum()
         .WithMessage("A valid user role is required.");
 

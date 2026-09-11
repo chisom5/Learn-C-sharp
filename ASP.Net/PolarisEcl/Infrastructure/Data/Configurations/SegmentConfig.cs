@@ -29,7 +29,6 @@ public class SegmentConfig : IEntityTypeConfiguration<Segment>
             .HasForeignKey(s => s.UpdatedById)
             .OnDelete(DeleteBehavior.Restrict);
 
-        builder.HasIndex(s => s.IsActive);
         builder.HasQueryFilter(s => s.IsActive);
     }
 }

@@ -20,31 +20,64 @@ public class TemplateService : ITemplateService
         _logger = logger;
     }
 
-    public async Task<string> UploadTemplateAsync(UploadTemplateRequestDto request, Guid userId)
+    public async Task<string> UploadSystemTemplateAsync(UploadTemplateRequestDto request, Guid userId)
     {
-        _logger.LogInformation($"Processing upload of template file. {request.File.FileName}");
-        if (request.ComputationId == null)
+
+        var existingTemplate = await _context.ComputationFiles.FirstOrDefaultAsync(f => f.File == request.FileType && f.ComputationId == null);
+
+
+        if (existingTemplate != null)
         {
-            var existingDefaultTemplate = await _context.ComputationFiles
-                .FirstOrDefaultAsync(f => f.File == request.FileType && f.ComputationId == null);
+            _logger.LogInformation("Replacing existing system template for {FileType}", request.FileType);
 
-            if (existingDefaultTemplate != null)
+            await _storageService.DeleteFileAsync(existingTemplate.StoragePath);
+
+            using var stream = request.File.OpenReadStream();
+            string newStoragePath = await _storageService.SaveFileAsync(stream, request.File.FileName, "Templates");
+
+            existingTemplate.FileName = request.File.FileName;
+            existingTemplate.StoragePath = newStoragePath;
+            existingTemplate.UploadedAt = DateTime.UtcNow;
+            existingTemplate.UploadedById = userId;
+
+            _context.ComputationFiles.Update(existingTemplate);
+        }
+        else
+        {
+            using var stream = request.File.OpenReadStream();
+            string relativeStoragePath = await _storageService.SaveFileAsync(stream, request.File.FileName, "Templates");
+
+            var newTemplate = new ComputationFile
             {
-                _logger.LogInformation("Found existing default template for {FileType}. Replacing file...", request.FileType);
+                Id = Guid.NewGuid(),
+                ComputationId = null,
+                File = request.FileType,
+                FileName = request.File.FileName,
+                StoragePath = relativeStoragePath,
+                UploadedAt = DateTime.UtcNow,
+                UploadedById = userId
+            };
 
-                await _storageService.DeleteFileAsync(existingDefaultTemplate.StoragePath);
-
-                _context.ComputationFiles.Remove(existingDefaultTemplate);
-            }
+            _context.ComputationFiles.Add(newTemplate);
         }
 
-        string folderName = request.ComputationId == null ? "Templates" : "Uploads";
+        await _context.SaveChangesAsync();
+        return "Upload template updated successfully.";
+    }
+
+    public async Task<string> UploadUserComputationFileAsync(UploadTemplateRequestDto request, Guid userId)
+    {
+        var computationExists = await _context.ECLComputations.AnyAsync(f => f.Id == request.ComputationId);
+
+        if (!computationExists)
+        {
+            throw new NotFoundException("The specified computation does not exist.");
+        }
 
         using var stream = request.File.OpenReadStream();
-        string relativeStoragePath = await _storageService.SaveFileAsync(stream, request.File.FileName, folderName);
+        string relativeStoragePath = await _storageService.SaveFileAsync(stream, request.File.FileName, "Uploads");
 
-
-        var computationFile = new ComputationFile
+        var userFile = new ComputationFile
         {
             Id = Guid.NewGuid(),
             ComputationId = request.ComputationId,
@@ -53,16 +86,14 @@ public class TemplateService : ITemplateService
             StoragePath = relativeStoragePath,
             UploadedAt = DateTime.UtcNow,
             UploadedById = userId
-
         };
 
-        _context.ComputationFiles.Add(computationFile);
+        _context.ComputationFiles.Add(userFile);
         await _context.SaveChangesAsync();
 
-        _logger.LogInformation($"Successfully upload template of {request.File.FileName}");
-        return "Upload Successful";
-    }
+        return "File uploaded successfully.";
 
+    }
     public async Task<DownloadTemplateDto> DownloadDefaultTemplateAsync(FileType fileType)
     {
         _logger.LogInformation($"Processing template download for {fileType}");

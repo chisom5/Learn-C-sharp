@@ -32,7 +32,6 @@ public class RegressionParameterConfig : IEntityTypeConfiguration<RegressionPara
             .HasForeignKey(rp => rp.UpdatedById)
             .OnDelete(DeleteBehavior.Restrict);
 
-        builder.HasIndex(rp => rp.IsActive);
         builder.HasQueryFilter(rp => rp.IsActive);
     }
 }

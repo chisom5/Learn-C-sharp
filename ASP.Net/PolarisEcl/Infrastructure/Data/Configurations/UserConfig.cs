@@ -38,5 +38,6 @@ public class UserConfiguration : IEntityTypeConfiguration<User>
 
         builder.Property(u => u.IsActive);
         builder.Property(u => u.IsDeleted);
+
     }
 }

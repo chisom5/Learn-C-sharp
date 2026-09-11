@@ -485,6 +485,10 @@ namespace PolarisEcl.Infrastructure.Migrations
 
                     b.HasKey("Id");
 
+                    b.HasIndex("Month");
+
+                    b.HasIndex("Year");
+
                     b.ToTable("Loans", (string)null);
                 });
 

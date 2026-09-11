@@ -39,7 +39,6 @@ public class CollateralTypeConfig : IEntityTypeConfiguration<CollateralType>
             .HasForeignKey(ct => ct.UpdatedById)
             .OnDelete(DeleteBehavior.Restrict);
 
-        builder.HasIndex(ct => ct.IsActive);
         builder.HasQueryFilter(ct => ct.IsActive);
     }
 }

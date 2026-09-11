@@ -25,7 +25,7 @@ try
 
     var builder = WebApplication.CreateBuilder(args);
 
-    // api version
+    // api versioning
     builder.Services.AddApiVersioning(options =>
     {
         options.AssumeDefaultVersionWhenUnspecified = true;
@@ -36,7 +36,6 @@ try
     }).AddMvc().AddApiExplorer(options =>
     {
         options.GroupNameFormat = "'v'VVV";
-
         options.SubstituteApiVersionInUrl = true;
     });
 
@@ -187,14 +186,7 @@ try
     builder.Services.AddExceptionHandler<GlobalExceptionHandler>();
 
     var app = builder.Build();
-
-    app.UseExceptionHandler();
-
-    if (!app.Environment.IsDevelopment())
-    {
-        app.UseHttpsRedirection();
-    }
-    app.UseCors("AllowAll");
+    // middleware registration
     app.UseSerilogRequestLogging(options =>
     {
         options.GetLevel = (httpContext, elapsed, ex) =>
@@ -207,6 +199,14 @@ try
             return ex != null ? Serilog.Events.LogEventLevel.Error : Serilog.Events.LogEventLevel.Information;
         };
     });
+    
+    app.UseExceptionHandler();
+
+    if (!app.Environment.IsDevelopment())
+    {
+        app.UseHttpsRedirection();
+    }
+    app.UseCors("AllowAll");
 
     // Configure the HTTP request pipeline.
     if (app.Environment.IsDevelopment())

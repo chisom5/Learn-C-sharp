@@ -41,7 +41,6 @@ public class ExpectedCorrelationConfig : IEntityTypeConfiguration<ExpectedCorrel
             .HasForeignKey(ec => ec.UpdatedById)
             .OnDelete(DeleteBehavior.Restrict);
 
-        builder.HasIndex(ec => ec.IsActive);
         builder.HasQueryFilter(ec => ec.IsActive);
     }
 }

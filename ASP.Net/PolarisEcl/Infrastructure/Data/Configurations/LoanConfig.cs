@@ -53,6 +53,9 @@ public class LoanConfiguration : IEntityTypeConfiguration<Loan>
         builder.Property(x => x.ECL)
         .IsRequired()
         .HasPrecision(18, 2);
+        
+        builder.HasIndex(x => x.Year);
+        builder.HasIndex(x => x.Month);
 
         builder.Property(x => x.CreatedAt)
             .IsRequired()

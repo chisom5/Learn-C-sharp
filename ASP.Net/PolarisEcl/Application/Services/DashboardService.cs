@@ -108,16 +108,21 @@ public class DashboardService : IDashboardSerivce
             dataSnapshots = dataSnapshots.Where(d => d.Month == request.Month);
         }
 
-        var chart1Data = await dataSnapshots
-                            .GroupBy(g => g.ProductType.ToString())
-                            .Select(s => new SegmentDistributionDto
+        var rawData = await dataSnapshots
+                            .GroupBy(g => g.ProductType)
+                            .Select(s => new
                             {
-                                Segment = FormatSegmentName(s.Key),
+                                ProductKey = s.Key,
                                 ECL = s.Sum(x => x.ECL),
                                 EAD = s.Sum(x => x.EAD)
                             }).ToListAsync();
 
-        return chart1Data;
+        return rawData.Select(d => new SegmentDistributionDto
+        {
+            Segment = FormatSegmentName(d.ProductKey.ToString()),
+            ECL = d.ECL,
+            EAD = d.EAD
+        });
     }
 
     public async Task<IEnumerable<StageDistributionDto>> GetStageDistributionAsync(DashboardRequestDto request)
@@ -130,16 +135,21 @@ public class DashboardService : IDashboardSerivce
             dataSnapshots = dataSnapshots.Where(d => d.Month == request.Month);
         }
 
-        var chart1Data = await dataSnapshots
-                            .GroupBy(g => g.Stage.ToString())
-                            .Select(s => new StageDistributionDto
+        var raw1Data = await dataSnapshots
+                            .GroupBy(g => g.Stage)
+                            .Select(s => new
                             {
-                                Stages = "Stage " + s.Key,
+                                Stages = s.Key,
                                 ECL = s.Sum(x => x.ECL),
                                 EAD = s.Sum(x => x.EAD)
                             }).ToListAsync();
 
-        return chart1Data;
+        return raw1Data.Select(d => new StageDistributionDto
+        {
+            Stages = $"Stage {d.Stages}",
+            ECL = d.ECL,
+            EAD = d.EAD
+        });
     }
 
     public async Task<IEnumerable<EadByStageDto>> GetEadBySegmentAndStageAsync(DashboardRequestDto request)
@@ -153,16 +163,22 @@ public class DashboardService : IDashboardSerivce
         }
 
         var chart2Data = await dataSnapshots
-                            .GroupBy(g => g.ProductType.ToString())
-                          .Select(s => new EadByStageDto
+                            .GroupBy(g => g.ProductType)
+                          .Select(s => new
                           {
-                              Segment = FormatSegmentName(s.Key),
-                              Stage1 = s.Where(v => v.Stage == ECLStage.Stage1).Sum(val => val.EAD),
-                              Stage2 = s.Where(v => v.Stage == ECLStage.Stage2).Sum(val => val.EAD),
-                              Stage3 = s.Where(v => v.Stage == ECLStage.Stage3).Sum(val => val.EAD)
+                              Segment = s.Key,
+                              Stage1 = s.Sum(val => val.Stage == ECLStage.Stage1 ? val.EAD : 0),
+                              Stage2 = s.Sum(val => val.Stage == ECLStage.Stage2 ? val.EAD : 0),
+                              Stage3 = s.Sum(val => val.Stage == ECLStage.Stage3 ? val.EAD : 0)
                           }).ToListAsync();
 
-        return chart2Data;
+        return chart2Data.Select(d => new EadByStageDto
+        {
+            Segment = FormatSegmentName(d.Segment.ToString()),
+            Stage1 = d.Stage1,
+            Stage2 = d.Stage2,
+            Stage3 = d.Stage3
+        });
     }
 
     public async Task<IEnumerable<TrendDataDto>> GetTrendChartByMonthAsync(DashboardRequestDto request)

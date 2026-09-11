@@ -14,10 +14,10 @@ public class ResponseWrapperFilter : ActionFilterAttribute
         {
             var statusCode = objectResult.StatusCode ?? 200;
 
-            // if (statusCode >= 400)
-            // {
-            //     return;
-            // }
+            if (statusCode >= 400)
+            {
+                return;
+            }
 
             if (objectResult.Value is ProblemDetails)
             {

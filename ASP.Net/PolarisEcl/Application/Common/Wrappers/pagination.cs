@@ -3,7 +3,7 @@ namespace PolarisEcl.Application.Common.Wrappers;
 public class PageQuery
 {
     public int PageNum {get; set;} = 1;
-    public int PageSize {get; set;} = 2;
+    public int PageSize {get; set;} = 10;
     // public string? Search {get; set;}
     // public string? SortBy {get; set;}
 }

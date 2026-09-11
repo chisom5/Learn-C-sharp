@@ -27,6 +27,7 @@ public class AuthService : IAuthService
     public async Task<LoginResponseDto> LoginAsync(LoginRequestDto request)
     {
         var user = await _context.Users.SingleOrDefaultAsync(u => u.Email == request.Email);
+        _logger.LogInformation($"Attempting login for email: {request.Email}, {user}");
 
         if (user is null || !_passwordHasher.VerifyPassword(request.Password, user.PasswordHash))
         {

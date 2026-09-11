@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace PolarisEcl.Infrastructure.Migrations
 {
     /// <inheritdoc />
-    public partial class Initial : Migration
+    public partial class Initialcreate : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -55,13 +55,38 @@ namespace PolarisEcl.Infrastructure.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "CollateralTypes",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(type: "uuid", nullable: false),
+                    Type = table.Column<string>(type: "character varying(500)", maxLength: 500, nullable: false),
+                    HaircutPercent = table.Column<decimal>(type: "numeric(18,2)", precision: 18, scale: 2, nullable: false),
+                    Perfected = table.Column<bool>(type: "boolean", nullable: false),
+                    IsActive = table.Column<bool>(type: "boolean", nullable: false),
+                    DurationYears = table.Column<int>(type: "integer", nullable: false),
+                    UpdatedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
+                    UpdatedById = table.Column<Guid>(type: "uuid", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_CollateralTypes", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_CollateralTypes_Users_UpdatedById",
+                        column: x => x.UpdatedById,
+                        principalTable: "Users",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "ECLComputations",
                 columns: table => new
                 {
                     Id = table.Column<Guid>(type: "uuid", nullable: false),
                     ComputationName = table.Column<string>(type: "character varying(250)", maxLength: 250, nullable: false),
                     Status = table.Column<string>(type: "character varying(30)", maxLength: 30, nullable: false),
-                    ReportingPeriod = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
+                    ReportingStartDate = table.Column<DateOnly>(type: "date", nullable: false),
+                    ReportingEndDate = table.Column<DateOnly>(type: "date", nullable: false),
                     CreatedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false, defaultValueSql: "CURRENT_TIMESTAMP"),
                     ArchivedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: true),
                     ComputedById = table.Column<Guid>(type: "uuid", nullable: false),
@@ -92,6 +117,53 @@ namespace PolarisEcl.Infrastructure.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "ExpectedCorrelations",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(type: "uuid", nullable: false),
+                    PrimeLendingRate = table.Column<int>(type: "integer", nullable: false),
+                    Inflation = table.Column<int>(type: "integer", nullable: false),
+                    YieldOnTreasuryBills = table.Column<int>(type: "integer", nullable: false),
+                    ExchangeRate = table.Column<int>(type: "integer", nullable: false),
+                    MonetaryPolicyRate = table.Column<int>(type: "integer", nullable: false),
+                    IsActive = table.Column<bool>(type: "boolean", nullable: false),
+                    UpdatedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
+                    UpdatedById = table.Column<Guid>(type: "uuid", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_ExpectedCorrelations", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_ExpectedCorrelations_Users_UpdatedById",
+                        column: x => x.UpdatedById,
+                        principalTable: "Users",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Products",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(type: "uuid", nullable: false),
+                    Name = table.Column<string>(type: "character varying(500)", maxLength: 500, nullable: false),
+                    SegmentType = table.Column<string>(type: "character varying(500)", maxLength: 500, nullable: false),
+                    IsActive = table.Column<bool>(type: "boolean", nullable: false),
+                    UpdatedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
+                    UpdatedById = table.Column<Guid>(type: "uuid", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Products", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Products_Users_UpdatedById",
+                        column: x => x.UpdatedById,
+                        principalTable: "Users",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "RefreshTokens",
                 columns: table => new
                 {
@@ -115,11 +187,54 @@ namespace PolarisEcl.Infrastructure.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "RegressionParameters",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(type: "uuid", nullable: false),
+                    RSquareLimit = table.Column<decimal>(type: "numeric", nullable: false),
+                    PValueSelected = table.Column<decimal>(type: "numeric", nullable: false),
+                    IsActive = table.Column<bool>(type: "boolean", nullable: false),
+                    UpdatedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
+                    UpdatedById = table.Column<Guid>(type: "uuid", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_RegressionParameters", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_RegressionParameters_Users_UpdatedById",
+                        column: x => x.UpdatedById,
+                        principalTable: "Users",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Segments",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(type: "uuid", nullable: false),
+                    Name = table.Column<string>(type: "character varying(500)", maxLength: 500, nullable: false),
+                    IsActive = table.Column<bool>(type: "boolean", nullable: false),
+                    UpdatedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
+                    UpdatedById = table.Column<Guid>(type: "uuid", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Segments", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Segments_Users_UpdatedById",
+                        column: x => x.UpdatedById,
+                        principalTable: "Users",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "ComputationFiles",
                 columns: table => new
                 {
                     Id = table.Column<Guid>(type: "uuid", nullable: false),
-                    ComputationId = table.Column<Guid>(type: "uuid", nullable: false),
+                    ComputationId = table.Column<Guid>(type: "uuid", nullable: true),
                     File = table.Column<string>(type: "character varying(30)", maxLength: 30, nullable: false),
                     FileName = table.Column<string>(type: "character varying(255)", maxLength: 255, nullable: false),
                     StoragePath = table.Column<string>(type: "character varying(500)", maxLength: 500, nullable: false),
@@ -316,6 +431,11 @@ namespace PolarisEcl.Infrastructure.Migrations
                 });
 
             migrationBuilder.CreateIndex(
+                name: "IX_CollateralTypes_UpdatedById",
+                table: "CollateralTypes",
+                column: "UpdatedById");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_ComputationFiles_ComputationId",
                 table: "ComputationFiles",
                 column: "ComputationId");
@@ -341,9 +461,14 @@ namespace PolarisEcl.Infrastructure.Migrations
                 column: "ComputedById");
 
             migrationBuilder.CreateIndex(
-                name: "IX_ECLComputations_ReportingPeriod",
+                name: "IX_ECLComputations_ReportingEndDate",
                 table: "ECLComputations",
-                column: "ReportingPeriod");
+                column: "ReportingEndDate");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_ECLComputations_ReportingStartDate",
+                table: "ECLComputations",
+                column: "ReportingStartDate");
 
             migrationBuilder.CreateIndex(
                 name: "IX_ECLComputations_Status",
@@ -362,14 +487,34 @@ namespace PolarisEcl.Infrastructure.Migrations
                 unique: true);
 
             migrationBuilder.CreateIndex(
+                name: "IX_ExpectedCorrelations_UpdatedById",
+                table: "ExpectedCorrelations",
+                column: "UpdatedById");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_LGDResults_ComputationId",
                 table: "LGDResults",
                 column: "ComputationId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_Loans_Month",
+                table: "Loans",
+                column: "Month");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Loans_Year",
+                table: "Loans",
+                column: "Year");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_PDResults_ComputationId",
                 table: "PDResults",
                 column: "ComputationId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Products_UpdatedById",
+                table: "Products",
+                column: "UpdatedById");
 
             migrationBuilder.CreateIndex(
                 name: "IX_RefreshTokens_Token",
@@ -381,6 +526,16 @@ namespace PolarisEcl.Infrastructure.Migrations
                 name: "IX_RefreshTokens_UserId",
                 table: "RefreshTokens",
                 column: "UserId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_RegressionParameters_UpdatedById",
+                table: "RegressionParameters",
+                column: "UpdatedById");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Segments_UpdatedById",
+                table: "Segments",
+                column: "UpdatedById");
 
             migrationBuilder.CreateIndex(
                 name: "IX_StageOverrides_ComputationId",
@@ -408,6 +563,9 @@ namespace PolarisEcl.Infrastructure.Migrations
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(
+                name: "CollateralTypes");
+
+            migrationBuilder.DropTable(
                 name: "ComputationFiles");
 
             migrationBuilder.DropTable(
@@ -417,13 +575,25 @@ namespace PolarisEcl.Infrastructure.Migrations
                 name: "EclReportRows");
 
             migrationBuilder.DropTable(
+                name: "ExpectedCorrelations");
+
+            migrationBuilder.DropTable(
                 name: "LGDResults");
 
             migrationBuilder.DropTable(
                 name: "PDResults");
 
             migrationBuilder.DropTable(
+                name: "Products");
+
+            migrationBuilder.DropTable(
                 name: "RefreshTokens");
+
+            migrationBuilder.DropTable(
+                name: "RegressionParameters");
+
+            migrationBuilder.DropTable(
+                name: "Segments");
 
             migrationBuilder.DropTable(
                 name: "StageOverrides");

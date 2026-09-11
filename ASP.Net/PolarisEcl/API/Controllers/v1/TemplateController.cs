@@ -24,7 +24,7 @@ public class TemplateController : ControllerBase
         _templateService = service;
     }
 
-    [Authorize(Roles = "Admin, Staff")]
+    [Authorize(Roles = "Admin")]
     [HttpPost("upload")]
     [Consumes("multipart/form-data")]
     public async Task<IActionResult> UploadTemplate([FromForm] UploadTemplateRequestDto request, [FromServices] IValidator<UploadTemplateRequestDto> validator)
@@ -43,7 +43,31 @@ public class TemplateController : ControllerBase
             throw new UnauthorizedException("Unable to resolve valid user session token.");
         }
 
-        var response = await _templateService.UploadTemplateAsync(request, userId);
+        var response = await _templateService.UploadSystemTemplateAsync(request, userId);
+
+        return Created(string.Empty, new { message = response });
+    }
+
+    [Authorize(Roles = "Staff")]
+    [HttpPost("upload")]
+    [Consumes("multipart/form-data")]
+    public async Task<IActionResult> UploadUserComputationFile([FromForm] UploadTemplateRequestDto request, [FromServices] IValidator<UploadTemplateRequestDto> validator)
+    {
+
+        var validatorResult = await validator.ValidateAsync(request);
+
+        if (!validatorResult.IsValid)
+        {
+            throw new BadRequestException("", validatorResult.ToDictionary());
+        }
+
+        var currentUserIdStr = User.FindFirstValue(ClaimTypes.NameIdentifier) ?? User.FindFirstValue("sub");
+        if (!Guid.TryParse(currentUserIdStr, out var userId))
+        {
+            throw new UnauthorizedException("Unable to resolve valid user session token.");
+        }
+
+        var response = await _templateService.UploadUserComputationFileAsync(request, userId);
 
         return Created(string.Empty, new { message = response });
     }

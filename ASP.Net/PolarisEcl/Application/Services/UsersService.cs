@@ -59,9 +59,9 @@ public class UsersService : IUsersService
 
     public async Task<PageResponse<AllUsersResponseDto>> GetAllUsers(PageQuery query)
     {
-        var totalRecords = await _context.Users.CountAsync();
+        var totalRecords = await _context.Users.AsNoTracking().CountAsync();
 
-        var result = await _context.Users.OrderBy(d => d.Id).ApplyPagination(query.PageNum, query.PageSize).ToListAsync();
+        var result = await _context.Users.AsNoTracking().OrderBy(d => d.Id).ApplyPagination(query.PageNum, query.PageSize).ToListAsync();
 
         var data = result.Select(user => new AllUsersResponseDto
         {

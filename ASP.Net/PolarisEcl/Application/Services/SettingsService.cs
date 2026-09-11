@@ -21,7 +21,7 @@ public class SettingServices : ISettingsService
 
     public async Task<SettingsResponseDto> GetSettingsAsync()
     {
-        var segments = await _context.Segments
+        var segments = await _context.Segments.AsNoTracking()
             .Select(s => new SegmentResponseDto
             {
                 Id = s.Id,
@@ -33,7 +33,7 @@ public class SettingServices : ISettingsService
             })
             .ToListAsync();
 
-        var products = await _context.Products
+        var products = await _context.Products.AsNoTracking()
         .Select(p => new ProductResponseDto
         {
             Id = p.Id,
@@ -46,7 +46,7 @@ public class SettingServices : ISettingsService
         })
         .ToListAsync();
 
-        var regressionParams = await _context.RegressionParameters
+        var regressionParams = await _context.RegressionParameters.AsNoTracking()
         .Select(r => new RegressionParamsResponseDto
         {
             Id = r.Id,
@@ -59,7 +59,7 @@ public class SettingServices : ISettingsService
         })
         .ToListAsync();
 
-        var correlations = await _context.ExpectedCorrelations
+        var correlations = await _context.ExpectedCorrelations.AsNoTracking()
         .Select(c => new ExpectedCorrelationResponseDto
         {
             Id = c.Id,
@@ -75,7 +75,7 @@ public class SettingServices : ISettingsService
         })
         .ToListAsync();
 
-        var collateralTypes = await _context.CollateralTypes
+        var collateralTypes = await _context.CollateralTypes.AsNoTracking()
         .Select(ct => new CollateralTypeResponseDto
         {
             Id = ct.Id,

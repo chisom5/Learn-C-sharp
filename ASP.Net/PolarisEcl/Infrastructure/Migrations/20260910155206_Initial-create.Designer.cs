@@ -12,8 +12,8 @@ using PolarisEcl.Infrastructure.Data;
 namespace PolarisEcl.Infrastructure.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20260714130117_ModifyComFile")]
-    partial class ModifyComFile
+    [Migration("20260910155206_Initial-create")]
+    partial class Initialcreate
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -24,6 +24,43 @@ namespace PolarisEcl.Infrastructure.Migrations
                 .HasAnnotation("Relational:MaxIdentifierLength", 63);
 
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
+
+            modelBuilder.Entity("PolarisEcl.Domain.Models.CollateralType", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
+
+                    b.Property<int>("DurationYears")
+                        .HasColumnType("integer");
+
+                    b.Property<decimal>("HaircutPercent")
+                        .HasPrecision(18, 2)
+                        .HasColumnType("numeric(18,2)");
+
+                    b.Property<bool>("IsActive")
+                        .HasColumnType("boolean");
+
+                    b.Property<bool>("Perfected")
+                        .HasColumnType("boolean");
+
+                    b.Property<string>("Type")
+                        .IsRequired()
+                        .HasMaxLength(500)
+                        .HasColumnType("character varying(500)");
+
+                    b.Property<DateTime>("UpdatedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<Guid>("UpdatedById")
+                        .HasColumnType("uuid");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("UpdatedById");
+
+                    b.ToTable("CollateralTypes", (string)null);
+                });
 
             modelBuilder.Entity("PolarisEcl.Domain.Models.ComputationFile", b =>
                 {
@@ -223,8 +260,11 @@ namespace PolarisEcl.Infrastructure.Migrations
                         .HasColumnType("integer")
                         .HasDefaultValue(0);
 
-                    b.Property<DateTime>("ReportingPeriod")
-                        .HasColumnType("timestamp with time zone");
+                    b.Property<DateOnly>("ReportingEndDate")
+                        .HasColumnType("date");
+
+                    b.Property<DateOnly>("ReportingStartDate")
+                        .HasColumnType("date");
 
                     b.Property<string>("ReviewComment")
                         .HasMaxLength(1000)
@@ -244,7 +284,9 @@ namespace PolarisEcl.Infrastructure.Migrations
 
                     b.HasIndex("ComputedById");
 
-                    b.HasIndex("ReportingPeriod");
+                    b.HasIndex("ReportingEndDate");
+
+                    b.HasIndex("ReportingStartDate");
 
                     b.HasIndex("Status");
 
@@ -323,6 +365,43 @@ namespace PolarisEcl.Infrastructure.Migrations
                     b.HasIndex("ReportId");
 
                     b.ToTable("EclReportRows", (string)null);
+                });
+
+            modelBuilder.Entity("PolarisEcl.Domain.Models.ExpectedCorrelation", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
+
+                    b.Property<int>("ExchangeRate")
+                        .HasColumnType("integer");
+
+                    b.Property<int>("Inflation")
+                        .HasColumnType("integer");
+
+                    b.Property<bool>("IsActive")
+                        .HasColumnType("boolean");
+
+                    b.Property<int>("MonetaryPolicyRate")
+                        .HasColumnType("integer");
+
+                    b.Property<int>("PrimeLendingRate")
+                        .HasColumnType("integer");
+
+                    b.Property<DateTime>("UpdatedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<Guid>("UpdatedById")
+                        .HasColumnType("uuid");
+
+                    b.Property<int>("YieldOnTreasuryBills")
+                        .HasColumnType("integer");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("UpdatedById");
+
+                    b.ToTable("ExpectedCorrelations", (string)null);
                 });
 
             modelBuilder.Entity("PolarisEcl.Domain.Models.LGDResult", b =>
@@ -409,6 +488,10 @@ namespace PolarisEcl.Infrastructure.Migrations
 
                     b.HasKey("Id");
 
+                    b.HasIndex("Month");
+
+                    b.HasIndex("Year");
+
                     b.ToTable("Loans", (string)null);
                 });
 
@@ -481,6 +564,38 @@ namespace PolarisEcl.Infrastructure.Migrations
                     b.ToTable("PDResults", (string)null);
                 });
 
+            modelBuilder.Entity("PolarisEcl.Domain.Models.Product", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
+
+                    b.Property<bool>("IsActive")
+                        .HasColumnType("boolean");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasMaxLength(500)
+                        .HasColumnType("character varying(500)");
+
+                    b.Property<string>("SegmentType")
+                        .IsRequired()
+                        .HasMaxLength(500)
+                        .HasColumnType("character varying(500)");
+
+                    b.Property<DateTime>("UpdatedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<Guid>("UpdatedById")
+                        .HasColumnType("uuid");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("UpdatedById");
+
+                    b.ToTable("Products", (string)null);
+                });
+
             modelBuilder.Entity("PolarisEcl.Domain.Models.RefreshToken", b =>
                 {
                     b.Property<Guid>("Id")
@@ -516,6 +631,61 @@ namespace PolarisEcl.Infrastructure.Migrations
                     b.HasIndex("UserId");
 
                     b.ToTable("RefreshTokens", (string)null);
+                });
+
+            modelBuilder.Entity("PolarisEcl.Domain.Models.RegressionParameter", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
+
+                    b.Property<bool>("IsActive")
+                        .HasColumnType("boolean");
+
+                    b.Property<decimal>("PValueSelected")
+                        .HasColumnType("numeric");
+
+                    b.Property<decimal>("RSquareLimit")
+                        .HasColumnType("numeric");
+
+                    b.Property<DateTime>("UpdatedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<Guid>("UpdatedById")
+                        .HasColumnType("uuid");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("UpdatedById");
+
+                    b.ToTable("RegressionParameters", (string)null);
+                });
+
+            modelBuilder.Entity("PolarisEcl.Domain.Models.Segment", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
+
+                    b.Property<bool>("IsActive")
+                        .HasColumnType("boolean");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasMaxLength(500)
+                        .HasColumnType("character varying(500)");
+
+                    b.Property<DateTime>("UpdatedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<Guid>("UpdatedById")
+                        .HasColumnType("uuid");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("UpdatedById");
+
+                    b.ToTable("Segments", (string)null);
                 });
 
             modelBuilder.Entity("PolarisEcl.Domain.Models.StageOverride", b =>
@@ -609,6 +779,17 @@ namespace PolarisEcl.Infrastructure.Migrations
                     b.ToTable("Users");
                 });
 
+            modelBuilder.Entity("PolarisEcl.Domain.Models.CollateralType", b =>
+                {
+                    b.HasOne("PolarisEcl.Domain.Models.User", "UpdatedBy")
+                        .WithMany()
+                        .HasForeignKey("UpdatedById")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("UpdatedBy");
+                });
+
             modelBuilder.Entity("PolarisEcl.Domain.Models.ComputationFile", b =>
                 {
                     b.HasOne("PolarisEcl.Domain.Models.ECLComputation", "ECLComputation")
@@ -678,6 +859,17 @@ namespace PolarisEcl.Infrastructure.Migrations
                     b.Navigation("ECLReport");
                 });
 
+            modelBuilder.Entity("PolarisEcl.Domain.Models.ExpectedCorrelation", b =>
+                {
+                    b.HasOne("PolarisEcl.Domain.Models.User", "UpdatedBy")
+                        .WithMany()
+                        .HasForeignKey("UpdatedById")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("UpdatedBy");
+                });
+
             modelBuilder.Entity("PolarisEcl.Domain.Models.LGDResult", b =>
                 {
                     b.HasOne("PolarisEcl.Domain.Models.ECLComputation", "ECLComputation")
@@ -700,6 +892,17 @@ namespace PolarisEcl.Infrastructure.Migrations
                     b.Navigation("ECLComputation");
                 });
 
+            modelBuilder.Entity("PolarisEcl.Domain.Models.Product", b =>
+                {
+                    b.HasOne("PolarisEcl.Domain.Models.User", "UpdatedBy")
+                        .WithMany()
+                        .HasForeignKey("UpdatedById")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("UpdatedBy");
+                });
+
             modelBuilder.Entity("PolarisEcl.Domain.Models.RefreshToken", b =>
                 {
                     b.HasOne("PolarisEcl.Domain.Models.User", "User")
@@ -709,6 +912,28 @@ namespace PolarisEcl.Infrastructure.Migrations
                         .IsRequired();
 
                     b.Navigation("User");
+                });
+
+            modelBuilder.Entity("PolarisEcl.Domain.Models.RegressionParameter", b =>
+                {
+                    b.HasOne("PolarisEcl.Domain.Models.User", "UpdatedBy")
+                        .WithMany()
+                        .HasForeignKey("UpdatedById")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("UpdatedBy");
+                });
+
+            modelBuilder.Entity("PolarisEcl.Domain.Models.Segment", b =>
+                {
+                    b.HasOne("PolarisEcl.Domain.Models.User", "UpdatedBy")
+                        .WithMany()
+                        .HasForeignKey("UpdatedById")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("UpdatedBy");
                 });
 
             modelBuilder.Entity("PolarisEcl.Domain.Models.StageOverride", b =>
