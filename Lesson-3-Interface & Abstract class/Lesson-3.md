@@ -60,7 +60,6 @@ I can not have another abstract class to be inherited by it.
 
 - Encapsulation - Is hiding internal implementation details and exposing only what is neccessary using access modifiers.
 i.e using private, public, protected etc. 
-Encapsulation focuses on how to hide the internal state of an object and 
-bundle data with method.
+Encapsulation focuses on how to hide the internal state of an object and bundle data with method.
 
-- Abstraction - Is hiding Complex implementation details and showing only the essential features of an object. we having abstraction using interfaces and abstract class. Abstraction focuses on what an object does.
+- Abstraction - Is hiding Complex implementation details and showing only the essential features of an object. We can achieve this using abstract classes.. Abstraction focuses on what an object does.
