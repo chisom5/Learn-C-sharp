@@ -69,8 +69,6 @@ public class GlobalExceptionHandler : IExceptionHandler
             problemDetails.Extensions["errors"] = validationErrors;
         }
 
-        // await httpContext.Response.WriteAsJsonAsync(problemDetails, cancellationToken);
-        // return true;
         return await __problemDetailsService.TryWriteAsync(new ProblemDetailsContext
         {
             HttpContext = httpContext,
