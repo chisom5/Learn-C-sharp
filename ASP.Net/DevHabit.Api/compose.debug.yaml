@@ -5,7 +5,7 @@ services:
     image: devhabitapi
     build:
       context: .
-      dockerfile: Dockerfile
+      dockerfile: Presentation/Dockerfile
       args:
         - configuration=Debug
     ports:

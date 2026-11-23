@@ -9,15 +9,3 @@ Prioritise APIs in the development process, mean that we start thinking of desig
 - API First encourages collaboration between teams and stakeholders
 
 
-Project
-
-1. DevHabit API: Developer Habit tracking is a RESTful API service design to help developer track their professional development habits, set goals and monitor progress
-
-Requirement
-
-- User management and Authentication
-- Habit tracking and management
-- Goal setting and progress monitoring
-- Entry logging and streak tracking
-- Tag-based organisation
-- batch operations support

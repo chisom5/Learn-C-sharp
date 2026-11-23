@@ -5,6 +5,6 @@ services:
     image: devhabitapi
     build:
       context: .
-      dockerfile: Dockerfile
+      dockerfile: Presentation/Dockerfile
     ports:
       - 5135:5135
