@@ -1,0 +1,10 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.EntityFrameworkCore" />
+  </ItemGroup>
+
+    <ItemGroup>
+    <ProjectReference Include="../Domain/DevHabit.Api.Domain.csproj" />
+  </ItemGroup>
+</Project>

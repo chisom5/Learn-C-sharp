@@ -1,0 +1,14 @@
+<Solution>
+  <Folder Name="/Presentation/">
+    <Project Path="Presentation/DevHabit.Api.csproj" />
+  </Folder>
+  <Folder Name="/Application/">
+    <Project Path="Application/DevHabit.Api.Application.csproj" />
+  </Folder>
+  <Folder Name="/Domain/">
+    <Project Path="Domain/DevHabit.Api.Domain.csproj" />
+  </Folder>
+  <Folder Name="/Infrastructure/">
+    <Project Path="Infrastructure/DevHabit.Api.Infrastructure.csproj" />
+  </Folder>
+</Solution>

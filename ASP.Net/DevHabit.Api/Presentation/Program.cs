@@ -1,7 +1,11 @@
+using DevHabit.Extensions;
+
 WebApplicationBuilder builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddControllers();
 builder.Services.AddOpenApi();
+
+builder.Services.AddInfrastructureServices(builder.Configuration);
 
 WebApplication app = builder.Build();
 

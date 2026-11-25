@@ -11,7 +11,10 @@ WORKDIR /Presentation
 COPY ["Directory.Packages.props", "."]
 COPY ["Directory.Build.props", "."]
 COPY [".editorconfig", "."]
-COPY ["Presentation/DevHabit.Api.csproj", "src/"]
+COPY ["Application/DevHabit.Api.Application.csproj", "Application/"]
+COPY ["Domain/DevHabit.Api.Domain.csproj", "Domain/"]
+COPY ["Infrastructure/DevHabit.Api.Infrastructure.csproj", "Infrastructure/"]
+COPY ["Presentation/DevHabit.Api.csproj", "Presentation/"]
 RUN dotnet restore "Presentation/DevHabit.Api.csproj"
 COPY . .
 RUN dotnet build "Presentation/DevHabit.Api.csproj" -c $configuration -o /app/build 

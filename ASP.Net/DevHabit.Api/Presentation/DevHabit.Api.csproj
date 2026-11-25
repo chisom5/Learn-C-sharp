@@ -8,6 +8,11 @@
 
   <ItemGroup>
     <PackageReference Include="Microsoft.AspNetCore.OpenApi" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Design" />
   </ItemGroup>
 
+    <ItemGroup>
+    <ProjectReference Include="..\Application\DevHabit.Api.Application.csproj" />
+    <ProjectReference Include="..\Infrastructure\DevHabit.Api.Infrastructure.csproj" />
+  </ItemGroup>
 </Project>
