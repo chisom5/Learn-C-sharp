@@ -25,4 +25,5 @@ obj/
 
 # Local Docker compose & dev settings with local connection string
 ASP.Net/DevHabit.Api/compose.yaml
+ASP.Net/DevHabit.Api/compose.debug.yaml
 ASP.Net/DevHabit.Api/Presentation/appsettings.Development.json
